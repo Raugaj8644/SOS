@@ -1,0 +1,16 @@
+export const C = {
+  bg:       '#0a0a0a',
+  surface:  '#111111',
+  surface2: '#1a1a1a',
+  border:   '#1f1f1f',
+  border2:  '#262626',
+  red:      '#dc2626',
+  redDim:   'rgba(220,38,38,0.12)',
+  redBorder:'rgba(220,38,38,0.3)',
+  text:     '#e5e5e5',
+  textMid:  '#888888',
+  textDim:  '#555555',
+  textFaint:'#444444',
+  green:    '#22c55e',
+  blue:     '#3b82f6',
+} as const;

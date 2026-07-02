@@ -1,0 +1,47 @@
+version: '3.9'
+
+# ── Production overrides ─────────────────────────────────────────────────────
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+name: cerp-prod
+
+services:
+  api:
+    build:
+      target: production      # multi-stage: production image only
+    restart: always
+    command: node apps/api/dist/main.js
+    volumes: []               # no source mounts in prod
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+
+  web:
+    build:
+      target: production
+    restart: always
+    command: node apps/web/server.js
+    volumes: []
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: cerp-nginx
+    restart: always
+    depends_on: [api, web]
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./infrastructure/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./infrastructure/nginx/certs:/etc/nginx/certs:ro
+    networks: [cerp]

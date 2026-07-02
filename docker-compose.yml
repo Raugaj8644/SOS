@@ -1,0 +1,181 @@
+version: '3.9'
+
+# ── Community Emergency Response Platform — Development Stack ─────────────────
+# Services: postgres (PostGIS), redis, minio, api (NestJS), web (Next.js)
+#
+# Usage:
+#   docker compose up -d          # start all
+#   docker compose logs -f api    # tail API logs
+#   docker compose down -v        # stop + remove volumes
+
+name: cerp-dev
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:
+
+networks:
+  cerp:
+    driver: bridge
+
+services:
+  # ── PostgreSQL 15 + PostGIS 3.4 ────────────────────────────────────────────
+  postgres:
+    image: postgis/postgis:15-3.4-alpine
+    container_name: cerp-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB:                cerp
+      POSTGRES_USER:              cerp
+      POSTGRES_PASSWORD:          cerp_secret
+      POSTGRES_HOST_AUTH_METHOD:  trust
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infrastructure/postgres/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    ports:
+      - '5433:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U cerp -d cerp']
+      interval: 10s
+      timeout:  5s
+      retries:  5
+    networks: [cerp]
+
+  # ── Redis 7 ────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: cerp-redis
+    restart: unless-stopped
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    ports:
+      - '6379:6379'
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout:  5s
+      retries:  5
+    networks: [cerp]
+
+  # ── MinIO (S3-compatible) ──────────────────────────────────────────────────
+  minio:
+    image: minio/minio:latest
+    container_name: cerp-minio
+    restart: unless-stopped
+    command: server /data --console-address ':9001'
+    environment:
+      MINIO_ROOT_USER:     minio_admin
+      MINIO_ROOT_PASSWORD: minio_secret
+    volumes:
+      - minio_data:/data
+    ports:
+      - '9000:9000'   # S3 API
+      - '9001:9001'   # Web console (http://localhost:9001)
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:9000/minio/health/live']
+      interval: 30s
+      timeout:  10s
+      retries:  3
+    networks: [cerp]
+
+  # ── Create default MinIO bucket on startup ─────────────────────────────────
+  minio-init:
+    image: minio/mc:latest
+    container_name: cerp-minio-init
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: |
+      /bin/sh -c "
+        mc alias set local http://minio:9000 minio_admin minio_secret;
+        mc mb local/cerp-media --ignore-existing;
+        mc anonymous set download local/cerp-media;
+        echo 'MinIO bucket ready';
+      "
+    networks: [cerp]
+    restart: 'no'
+
+  # ── NestJS API ─────────────────────────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+      target: builder           # use builder stage in dev (has ts-node)
+    container_name: cerp-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      NODE_ENV:             development
+
+      # DB
+      DB_HOST:              postgres
+      DB_PORT:              '5432'
+      DB_NAME:              cerp
+      DB_USER:              cerp
+      DB_PASS:              cerp_secret
+
+      # Redis
+      REDIS_HOST:           redis
+      REDIS_PORT:           '6379'
+
+      # JWT
+      JWT_ACCESS_SECRET:    dev-access-secret-change-me
+      JWT_REFRESH_SECRET:   dev-refresh-secret-change-me
+      JWT_ACCESS_EXPIRES:   '15m'
+      JWT_REFRESH_EXPIRES:  '7d'
+
+      # S3/MinIO
+      S3_ENDPOINT:          http://minio:9000
+      S3_REGION:            us-east-1
+      S3_BUCKET:            cerp-media
+      S3_ACCESS_KEY:        minio_admin
+      S3_SECRET_KEY:        minio_secret
+      S3_FORCE_PATH_STYLE:  'true'
+
+      # Firebase (fill in real values)
+      FIREBASE_PROJECT_ID:  your-project-id
+      FIREBASE_PRIVATE_KEY: your-private-key
+      FIREBASE_CLIENT_EMAIL: your-client-email
+
+    volumes:
+      # Mount source for live-reload in dev
+      - ./apps/api/src:/app/apps/api/src:ro
+      - ./packages/shared/src:/app/packages/shared/src:ro
+    ports:
+      - '4000:4000'
+    command: pnpm --filter api start:dev
+    networks: [cerp]
+
+  # ── Next.js Web ────────────────────────────────────────────────────────────
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      target: deps
+    container_name: cerp-web
+    restart: unless-stopped
+    depends_on:
+      - api
+    environment:
+      NODE_ENV:                      development
+      NEXT_PUBLIC_API_URL:           http://localhost:4000
+      NEXT_PUBLIC_WS_URL:            ws://localhost:4000
+      NEXT_PUBLIC_FIREBASE_API_KEY:  your-firebase-api-key
+      NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: your-project.firebaseapp.com
+      NEXT_PUBLIC_FIREBASE_PROJECT_ID:  your-project-id
+      NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: '123456789'
+      NEXT_PUBLIC_FIREBASE_APP_ID:   1:123456789:web:abc
+      NEXT_PUBLIC_FIREBASE_VAPID_KEY: your-vapid-key
+    volumes:
+      - ./apps/web/src:/app/apps/web/src:ro
+      - ./apps/web/public:/app/apps/web/public:ro
+    ports:
+      - '3000:3000'
+    command: pnpm --filter web dev
+    networks: [cerp]

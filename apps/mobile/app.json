@@ -1,0 +1,54 @@
+{
+  "expo": {
+    "name": "CERP",
+    "slug": "cerp-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "cerp",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "backgroundColor": "#0a0a0a"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.cerp.mobile",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "CERP needs location to show your position on the area map.",
+        "NSLocationAlwaysUsageDescription": "CERP needs location to alert you when an incident is nearby.",
+        "NSCameraUsageDescription": "CERP needs camera access to scan QR codes."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0a0a0a"
+      },
+      "package": "com.cerp.mobile",
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "CAMERA"
+      ]
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "CERP needs location to show your position and nearby incidents."
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "CERP needs camera access to scan QR codes."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
