@@ -1,8 +1,8 @@
-[phases.setup]
-aptPkgs = ["curl"]
+[phases.install]
+cmds = ["pnpm install --no-frozen-lockfile"]
 
 [phases.build]
-cmds = ["pnpm --filter @cerp/shared build && pnpm --filter @cerp/api build && ls -la /app/apps/api/dist/"]
+cmds = ["pnpm --filter @cerp/shared build && pnpm --filter @cerp/api build"]
 
 [start]
 cmd = "node apps/api/dist/main.js"
