@@ -10,16 +10,13 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
-    "incremental": true,
+    "incremental": false,
     "skipLibCheck": true,
     "strictNullChecks": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false,
-    "paths": {
-      "@cerp/shared": ["../../packages/shared/src"]
-    }
+    "noFallthroughCasesInSwitch": false
   },
   "exclude": ["node_modules", "dist", "test", "jest.config.ts"]
 }
