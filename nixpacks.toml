@@ -1,7 +1,8 @@
 [phases.build]
 cmds = [
   "pnpm --filter @cerp/shared build",
-  "pnpm --filter @cerp/api build"
+  "pnpm --filter @cerp/api build",
+  "echo '=== dist check ===' && ls apps/api/dist/ 2>/dev/null || echo 'ERROR: apps/api/dist/ not found!'"
 ]
 
 [start]
