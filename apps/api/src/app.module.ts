@@ -27,7 +27,7 @@ import { AdminModule } from './modules/admin/admin.module';
     // ── Database ──────────────────────────────────────────────────────────────
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => config.get('database')!,
+      useFactory: (config: ConfigService) => ({ ...config.get('database')!, retryAttempts: 3, retryDelay: 1000 }),
     }),
 
     // ── In-Memory Cache (no Redis required for dev) ───────────────────────────

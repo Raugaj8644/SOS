@@ -1,4 +1,4 @@
-import { registerAs } from '@nestjs/config';
+﻿import { registerAs } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { join } from 'path';
 
@@ -14,7 +14,7 @@ export default registerAs('database', (): TypeOrmModuleOptions => ({
     join(__dirname, '../common/entities/*.entity{.ts,.js}'),
   ],
   migrations: [join(__dirname, '../database/migrations/*{.ts,.js}')],
-  migrationsRun: process.env.NODE_ENV === 'production',
+  migrationsRun: false, // run migrations manually: railway run node apps/api/dist/migrate.js
   synchronize: false,
   logging: process.env.NODE_ENV === 'development' ? ['error'] : ['error'],
   // DB_SSL_REJECT_UNAUTHORIZED=false disables cert check (needed for Supabase/Railway)
