@@ -135,15 +135,15 @@ export function PolygonDrawer({ initialPolygon, onPolygonChange, center }: Props
         type="button"
         onClick={locateMe}
         title="ตำแหน่งปัจจุบัน"
-        className="absolute bottom-4 right-4 z-[1000] bg-white border border-slate-300 shadow-md
-                   rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50
+        className="absolute bottom-4 right-4 z-[1000] rounded-lg px-3 py-2 text-sm font-medium
                    flex items-center gap-1.5"
+        style={{ background: 'var(--surface)', border: '1px solid var(--border-2)', color: 'var(--text-2)', boxShadow: 'var(--shadow-sm)' }}
       >
         📍 ตำแหน่งฉัน
       </button>
       {!hasPolygon && (
         <div className="absolute inset-0 flex items-end justify-center pb-14 pointer-events-none">
-          <div className="bg-white/90 backdrop-blur px-4 py-2 rounded-lg text-sm text-slate-600 shadow">
+          <div className="backdrop-blur px-4 py-2 rounded-lg text-sm" style={{ background: 'rgba(250,248,242,0.9)', color: 'var(--text-2)', boxShadow: 'var(--shadow-sm)' }}>
             🖊️ กดปุ่ม polygon ซ้ายบนแผนที่เพื่อวาดขอบเขต Area
           </div>
         </div>

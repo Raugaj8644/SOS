@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const { login, isLoading } = useAuthStore();
   const router = useRouter();
 
@@ -22,65 +23,90 @@ export default function LoginPage() {
   };
 
   return (
-    <div>
-      {/* Logo */}
-      <div className="flex flex-col items-center mb-8">
-        {/* Shield icon */}
-        <div className="mb-4">
-          <svg viewBox="0 0 56 64" className="w-14 h-16">
-            <path d="M28 2 L52 12 V30 C52 44 42 54 28 60 C14 54 4 44 4 30 V12 Z"
-              fill="none" stroke="#dc2626" strokeWidth="2" />
-            <path d="M28 10 L46 18 V30 C46 40 38 48 28 54 C18 48 10 40 10 30 V18 Z"
-              fill="rgba(220,38,38,0.08)" stroke="none" />
-            {/* Inner shield detail */}
-            <rect x="22" y="24" width="12" height="14" rx="2"
-              fill="none" stroke="#dc2626" strokeWidth="1.5" />
-            <circle cx="28" cy="31" r="3" fill="#dc2626" />
-          </svg>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+
+      {/* ── Logo ─────────────────────────────────────────────────────────── */}
+      <div
+        style={{
+          display: 'flex', flexDirection: 'column', alignItems: 'center',
+          marginBottom: 32,
+          animation: 'slide-up 0.5s cubic-bezier(0.16,1,0.3,1) forwards',
+        }}
+      >
+        {/* Crimson orb logo */}
+        <div style={{ position: 'relative', marginBottom: 16 }}>
+          <div style={{
+            width: 72, height: 72,
+            background: 'radial-gradient(circle at 33% 33%, #FF8090, #B11226 52%, #3D0008)',
+            borderRadius: '50%',
+            boxShadow: '0 8px 40px rgba(177,18,38,0.45), inset 0 2px 10px rgba(255,255,255,0.22)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            animation: 'float 4s ease-in-out infinite',
+          }}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} style={{ width: 28, height: 28 }}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M20.618 5.984A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+          </div>
+          {/* Glow ring */}
+          <div style={{
+            position: 'absolute', inset: -8,
+            borderRadius: '50%',
+            border: '1px solid rgba(177,18,38,0.18)',
+            pointerEvents: 'none',
+          }} />
         </div>
 
         <h1
-          className="font-black tracking-widest"
-          style={{ fontSize: 28, letterSpacing: '0.3em', color: '#111' }}
+          style={{
+            fontSize: 34,
+            fontWeight: 400,
+            letterSpacing: '-0.02em',
+            color: 'var(--text)',
+            fontFamily: "'DM Serif Display', Georgia, serif",
+            marginBottom: 4,
+          }}
         >
           CERP
         </h1>
-
-        {/* Tactical Authentication divider */}
-        <div className="flex items-center gap-3 mt-2">
-          <div style={{ height: 1, width: 40, background: '#dc2626' }} />
-          <span style={{ color: '#888', fontSize: 9, fontWeight: 700, letterSpacing: '0.2em' }}>
-            TACTICAL AUTHENTICATION
-          </span>
-          <div style={{ height: 1, width: 40, background: '#dc2626' }} />
-        </div>
+        <p style={{ color: 'var(--text-3)', fontSize: 11, fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+          Community Emergency Response
+        </p>
       </div>
 
-      {/* Card */}
+      {/* ── Form card ────────────────────────────────────────────────────── */}
       <div
         style={{
-          background: '#fff',
-          border: '1px solid #dc2626',
-          borderRadius: 6,
-          padding: '28px 24px',
-          boxShadow: '0 2px 20px rgba(220,38,38,0.08)',
+          width: '100%',
+          background: 'rgba(255,255,255,0.85)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255,255,255,0.7)',
+          borderRadius: 'var(--radius-xl)',
+          padding: '32px 28px',
+          boxShadow: '0 4px 40px rgba(90,20,10,0.10), 0 1px 8px rgba(90,20,10,0.06)',
+          animation: 'slide-up 0.55s cubic-bezier(0.16,1,0.3,1) 80ms both',
         }}
       >
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Personnel ID */}
+        <p style={{ color: 'var(--text)', fontSize: 17, fontWeight: 700, marginBottom: 4, letterSpacing: '-0.02em' }}>
+          Welcome back
+        </p>
+        <p style={{ color: 'var(--text-3)', fontSize: 13, marginBottom: 24 }}>
+          Sign in to your responder account
+        </p>
+
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+
+          {/* Email */}
           <div>
-            <label
-              className="block font-bold uppercase"
-              style={{ fontSize: 9, letterSpacing: '0.2em', color: '#888', marginBottom: 8 }}
-            >
-              Personnel ID
+            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: 'var(--text-2)', marginBottom: 7, letterSpacing: '0.02em' }}>
+              Email address
             </label>
-            <div className="relative">
-              <div
-                className="absolute left-3 top-1/2 -translate-y-1/2"
-                style={{ color: '#bbb' }}
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4">
+            <div style={{ position: 'relative' }}>
+              <div style={{
+                position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)',
+                color: 'var(--text-3)', display: 'flex',
+              }}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} style={{ width: 16, height: 16 }}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </div>
@@ -89,100 +115,151 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                placeholder="E.G. ALPHA-904"
-                className="w-full pl-10 pr-4 py-3 focus:outline-none transition-colors"
+                placeholder="you@example.com"
+                autoComplete="email"
                 style={{
-                  background: '#fafafa',
-                  border: '1px solid #e5e5e5',
-                  borderRadius: 4,
-                  fontSize: 13,
-                  color: '#111',
-                  letterSpacing: '0.05em',
+                  width: '100%',
+                  paddingLeft: 38, paddingRight: 14, paddingTop: 11, paddingBottom: 11,
+                  background: 'var(--surface)',
+                  border: '1.5px solid var(--border-2)',
+                  borderRadius: 'var(--radius)',
+                  fontSize: 14, color: 'var(--text)',
+                  outline: 'none',
+                  transition: 'border-color 0.18s ease, box-shadow 0.18s ease',
+                  fontFamily: 'inherit',
                 }}
-                onFocus={(e) => { e.target.style.borderColor = '#dc2626'; }}
-                onBlur={(e) => { e.target.style.borderColor = '#e5e5e5'; }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = 'var(--primary)';
+                  e.target.style.boxShadow = '0 0 0 3px rgba(177,18,38,0.10)';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = 'var(--border-2)';
+                  e.target.style.boxShadow = 'none';
+                }}
               />
             </div>
           </div>
 
-          {/* Security Key */}
+          {/* Password */}
           <div>
-            <label
-              className="block font-bold uppercase"
-              style={{ fontSize: 9, letterSpacing: '0.2em', color: '#888', marginBottom: 8 }}
-            >
-              Security Key
+            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: 'var(--text-2)', marginBottom: 7, letterSpacing: '0.02em' }}>
+              Password
             </label>
-            <div className="relative">
-              <div
-                className="absolute left-3 top-1/2 -translate-y-1/2"
-                style={{ color: '#bbb' }}
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4">
+            <div style={{ position: 'relative' }}>
+              <div style={{
+                position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)',
+                color: 'var(--text-3)', display: 'flex',
+              }}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} style={{ width: 16, height: 16 }}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
                 </svg>
               </div>
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                placeholder="••••••••••••"
-                className="w-full pl-10 pr-4 py-3 focus:outline-none transition-colors"
+                placeholder="••••••••"
+                autoComplete="current-password"
                 style={{
-                  background: '#fafafa',
-                  border: '1px solid #e5e5e5',
-                  borderRadius: 4,
-                  fontSize: 13,
-                  color: '#111',
+                  width: '100%',
+                  paddingLeft: 38, paddingRight: 42, paddingTop: 11, paddingBottom: 11,
+                  background: 'var(--surface)',
+                  border: '1.5px solid var(--border-2)',
+                  borderRadius: 'var(--radius)',
+                  fontSize: 14, color: 'var(--text)',
+                  outline: 'none',
+                  transition: 'border-color 0.18s ease, box-shadow 0.18s ease',
+                  fontFamily: 'inherit',
                 }}
-                onFocus={(e) => { e.target.style.borderColor = '#dc2626'; }}
-                onBlur={(e) => { e.target.style.borderColor = '#e5e5e5'; }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = 'var(--primary)';
+                  e.target.style.boxShadow = '0 0 0 3px rgba(177,18,38,0.10)';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = 'var(--border-2)';
+                  e.target.style.boxShadow = 'none';
+                }}
               />
+              {/* Show/hide toggle */}
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                style={{
+                  position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)',
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  color: 'var(--text-3)', padding: 4, display: 'flex', borderRadius: 4,
+                  transition: 'color 0.15s',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--primary)')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-3)')}
+              >
+                {showPassword ? (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} style={{ width: 16, height: 16 }}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} style={{ width: 16, height: 16 }}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                )}
+              </button>
             </div>
           </div>
 
-          {/* Login button */}
+          {/* Submit */}
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 font-black uppercase tracking-widest transition-colors"
-            style={{
-              background: isLoading ? '#9b1c1c' : '#dc2626',
-              color: '#fff',
-              fontSize: 13,
-              letterSpacing: '0.3em',
-              borderRadius: 4,
-              border: 'none',
-              marginTop: 4,
-            }}
+            className="btn-primary"
+            style={{ width: '100%', marginTop: 6, padding: '13px 20px', fontSize: 14, fontWeight: 700, letterSpacing: '0.02em' }}
           >
-            {isLoading ? 'AUTHENTICATING…' : 'LOGIN'}
+            {isLoading ? (
+              <>
+                <span style={{
+                  width: 14, height: 14, borderRadius: '50%',
+                  border: '2px solid rgba(255,255,255,0.3)',
+                  borderTopColor: '#fff',
+                  animation: 'spin 0.7s linear infinite',
+                  display: 'inline-block',
+                }} />
+                Signing in…
+              </>
+            ) : 'Sign in'}
           </button>
         </form>
 
-        {/* Links */}
-        <div className="mt-5 flex flex-col items-center gap-3">
+        {/* Register link */}
+        <div style={{ marginTop: 20, display: 'flex', justifyContent: 'center' }}>
           <Link
             href="/register"
-            className="flex items-center gap-2"
-            style={{ color: '#888', fontSize: 10, fontWeight: 700, letterSpacing: '0.15em', textDecoration: 'none' }}
+            style={{
+              color: 'var(--text-3)', fontSize: 13, textDecoration: 'none',
+              display: 'flex', alignItems: 'center', gap: 5,
+              transition: 'color 0.15s',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--primary)')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-3)')}
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-3.5 h-3.5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-            </svg>
-            REGISTER NEW RESPONDER
+            No account?
+            <span style={{ color: 'var(--primary)', fontWeight: 600 }}>Register as responder →</span>
           </Link>
         </div>
       </div>
 
-      {/* Status bar */}
+      {/* ── Status bar ───────────────────────────────────────────────────── */}
       <div
-        className="mt-6 flex items-center justify-center gap-2"
-        style={{ color: '#aaa', fontSize: 9, letterSpacing: '0.15em' }}
+        style={{
+          marginTop: 24,
+          display: 'flex', alignItems: 'center', gap: 6,
+          color: 'var(--text-3)', fontSize: 10, letterSpacing: '0.10em',
+          animation: 'slide-up 0.5s cubic-bezier(0.16,1,0.3,1) 200ms both',
+        }}
       >
-        <div style={{ width: 6, height: 6, background: '#22c55e', borderRadius: 1 }} />
-        SYSTEM LIVE &nbsp;·&nbsp; CERP PLATFORM
+        <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--green)', display: 'inline-block', animation: 'pulse 2.5s infinite' }} />
+        SYSTEM LIVE · CERP PLATFORM
       </div>
     </div>
   );

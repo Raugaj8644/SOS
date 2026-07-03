@@ -35,13 +35,13 @@ export function useFcm() {
       toast.custom(
         (t) => (
           <div
-            className={`flex items-start gap-3 bg-white border border-slate-200 shadow-lg
-              rounded-2xl px-4 py-3 max-w-sm transition-all ${t.visible ? 'opacity-100' : 'opacity-0'}`}
+            className={`flex items-start gap-3 rounded-2xl px-4 py-3 max-w-sm transition-all ${t.visible ? 'opacity-100' : 'opacity-0'}`}
+            style={{ background: 'var(--surface)', border: '1px solid var(--border)', boxShadow: 'var(--shadow-lg)' }}
           >
             <span className="text-2xl">🚨</span>
             <div>
-              <p className="font-bold text-slate-800 text-sm">{title ?? 'CERP Alert'}</p>
-              {body && <p className="text-slate-500 text-xs mt-0.5">{body}</p>}
+              <p className="font-bold text-sm" style={{ color: 'var(--text)' }}>{title ?? 'CERP Alert'}</p>
+              {body && <p className="text-xs mt-0.5" style={{ color: 'var(--text-3)' }}>{body}</p>}
             </div>
           </div>
         ),

@@ -317,7 +317,6 @@ export function SosSpeedDial({ areaId, userPosition, variant = 'map' }: Props) {
                     fill="rgba(255,255,255,0.9)"
                     fontSize="11"
                     fontWeight="700"
-                    fontFamily="'Rajdhani',system-ui,-apple-system,sans-serif"
                     letterSpacing="0.5"
                     style={{ userSelect: 'none', pointerEvents: 'none' }}
                   >
@@ -330,12 +329,12 @@ export function SosSpeedDial({ areaId, userPosition, variant = 'map' }: Props) {
             {/* ── Hold-progress ring ─────────────────────────────────────── */}
             <circle
               cx={CX} cy={CY} r={PROG_R}
-              fill="none" stroke="rgba(239,68,68,0.18)" strokeWidth="7"
+              fill="none" stroke="rgba(179,36,28,0.18)" strokeWidth="7"
               style={{ pointerEvents: 'none' }}
             />
             <circle
               cx={CX} cy={CY} r={PROG_R}
-              fill="none" stroke="#ef4444" strokeWidth="7"
+              fill="none" stroke="#b3241c" strokeWidth="7"
               strokeLinecap="round"
               strokeDasharray={PROG_C}
               strokeDashoffset={PROG_C * (1 - holdPct / 100)}
@@ -351,10 +350,10 @@ export function SosSpeedDial({ areaId, userPosition, variant = 'map' }: Props) {
             {/* ── SOS button circle ──────────────────────────────────────── */}
             <circle
               cx={CX} cy={CY} r={BTN_R}
-              fill={open || isHolding ? '#991b1b' : '#dc2626'}
+              fill={open || isHolding ? '#931d17' : '#b3241c'}
               style={{
                 cursor: 'pointer',
-                filter: 'drop-shadow(0 4px 16px rgba(220,38,38,0.55))',
+                filter: 'drop-shadow(0 4px 16px rgba(179,36,28,0.55))',
                 transition: 'fill 0.15s',
                 pointerEvents: 'auto',
               }}
@@ -372,7 +371,6 @@ export function SosSpeedDial({ areaId, userPosition, variant = 'map' }: Props) {
               textAnchor="middle" dominantBaseline="middle"
               fill="white" fontSize="30"
               letterSpacing="6"
-              fontFamily="'Bebas Neue', sans-serif"
               style={{ pointerEvents: 'none', userSelect: 'none' }}
             >
               SOS
@@ -382,7 +380,6 @@ export function SosSpeedDial({ areaId, userPosition, variant = 'map' }: Props) {
               textAnchor="middle" dominantBaseline="middle"
               fill="rgba(255,255,255,0.60)" fontSize="10" fontWeight="600"
               letterSpacing="2"
-              fontFamily="'Rajdhani', system-ui, sans-serif"
               style={{ pointerEvents: 'none', userSelect: 'none' }}
             >
               {isHolding

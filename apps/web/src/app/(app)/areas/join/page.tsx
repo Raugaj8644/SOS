@@ -120,20 +120,20 @@ export default function JoinAreaPage() {
   };
 
   return (
-    <div style={{ background: '#0a0a0a', minHeight: '100vh' }}>
+    <div style={{ background: 'transparent', minHeight: '100vh' }}>
 
       {/* Header */}
-      <div className="px-4 pt-5 pb-3 flex items-center gap-3" style={{ borderBottom: '1px solid #1a1a1a' }}>
+      <div className="px-4 pt-5 pb-3 flex items-center gap-3" style={{ borderBottom: '1px solid var(--border)' }}>
         <Link
           href="/areas"
           className="flex items-center justify-center"
-          style={{ width: 32, height: 32, background: '#111', border: '1px solid #1f1f1f', borderRadius: 6, color: '#666', textDecoration: 'none', fontSize: 16 }}
+          style={{ width: 32, height: 32, background: 'var(--surface)', border: '1px solid var(--border-2)', borderRadius: 6, color: 'var(--text-3)', textDecoration: 'none', fontSize: 16 }}
         >
           ←
         </Link>
         <div>
-          <p style={{ color: '#555', fontSize: 9, fontWeight: 700, letterSpacing: '0.2em' }}>ACCESS REQUEST</p>
-          <p style={{ color: '#e5e5e5', fontSize: 18, fontWeight: 800, letterSpacing: '0.08em', marginTop: 1 }}>
+          <p style={{ color: 'var(--text-3)', fontSize: 9, fontWeight: 700, letterSpacing: '0.2em' }}>ACCESS REQUEST</p>
+          <p style={{ color: 'var(--text)', fontSize: 18, fontWeight: 800, letterSpacing: '0.08em', marginTop: 1 }}>
             JOIN AREA
           </p>
         </div>
@@ -143,7 +143,7 @@ export default function JoinAreaPage() {
       <div className="px-4 pt-4">
         <div
           className="flex"
-          style={{ background: '#111', border: '1px solid #1f1f1f', borderRadius: 8, padding: 3, gap: 3 }}
+          style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 8, padding: 3, gap: 3 }}
         >
           {([['code', '# INVITE CODE'], ['scan', '⊡ SCAN QR']] as const).map(([t, label]) => (
             <button
@@ -152,8 +152,8 @@ export default function JoinAreaPage() {
               className="flex-1 py-2 font-bold uppercase transition-all"
               style={{
                 fontSize: 10, letterSpacing: '0.15em', borderRadius: 6, border: 'none',
-                background: tab === t ? '#dc2626' : 'transparent',
-                color: tab === t ? '#fff' : '#444',
+                background: tab === t ? 'var(--red)' : 'transparent',
+                color: tab === t ? '#fff' : 'var(--text-3)',
               }}
             >
               {label}
@@ -168,9 +168,9 @@ export default function JoinAreaPage() {
         {tab === 'code' && (
           <div
             className="p-5"
-            style={{ background: '#111', border: '1px solid #1f1f1f', borderRadius: 10 }}
+            style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, boxShadow: 'var(--shadow-xs)' }}
           >
-            <p style={{ color: '#555', fontSize: 10, fontWeight: 700, letterSpacing: '0.15em', marginBottom: 16 }}>
+            <p style={{ color: 'var(--text-3)', fontSize: 10, fontWeight: 700, letterSpacing: '0.15em', marginBottom: 16 }}>
               ใส่รหัสเชิญที่ได้รับ
             </p>
             <form onSubmit={handleSubmit}>
@@ -182,10 +182,10 @@ export default function JoinAreaPage() {
                 autoCapitalize="characters"
                 className="w-full focus:outline-none"
                 style={{
-                  background: '#0d0d0d',
-                  border: '1px solid #262626',
+                  background: 'var(--surface-2)',
+                  border: '1.5px solid var(--border-2)',
                   borderRadius: 6,
-                  color: '#e5e5e5',
+                  color: 'var(--text)',
                   fontSize: 20,
                   fontFamily: 'monospace',
                   fontWeight: 700,
@@ -194,16 +194,16 @@ export default function JoinAreaPage() {
                   textAlign: 'center',
                   marginBottom: 12,
                 }}
-                onFocus={(e) => { e.target.style.borderColor = '#dc2626'; }}
-                onBlur={(e) => { e.target.style.borderColor = '#262626'; }}
+                onFocus={(e) => { e.target.style.borderColor = 'var(--red)'; }}
+                onBlur={(e) => { e.target.style.borderColor = 'var(--border-2)'; }}
               />
               <button
                 type="submit"
                 disabled={loading || !code.trim()}
                 className="w-full py-3 font-black uppercase"
                 style={{
-                  background: loading || !code.trim() ? '#2a0000' : '#dc2626',
-                  color: loading || !code.trim() ? '#555' : '#fff',
+                  background: loading || !code.trim() ? 'var(--surface-3)' : 'var(--red)',
+                  color: loading || !code.trim() ? 'var(--text-3)' : '#fff',
                   border: 'none', borderRadius: 6,
                   fontSize: 12, letterSpacing: '0.25em',
                   cursor: loading || !code.trim() ? 'not-allowed' : 'pointer',
@@ -218,12 +218,12 @@ export default function JoinAreaPage() {
         {/* ── SCAN TAB ─────────────────────────────────────────────────────── */}
         {tab === 'scan' && (
           <div
-            style={{ background: '#111', border: '1px solid #1f1f1f', borderRadius: 10, overflow: 'hidden' }}
+            style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, overflow: 'hidden', boxShadow: 'var(--shadow-xs)' }}
           >
             {scanSuccess ? (
               <div className="flex flex-col items-center py-16">
                 <div style={{ fontSize: 48, marginBottom: 12 }}>✅</div>
-                <p style={{ color: '#22c55e', fontSize: 13, fontWeight: 700, letterSpacing: '0.1em' }}>QR DETECTED — JOINING…</p>
+                <p style={{ color: 'var(--green)', fontSize: 13, fontWeight: 700, letterSpacing: '0.1em' }}>QR DETECTED — JOINING…</p>
               </div>
             ) : camActive ? (
               <div className="relative" style={{ background: '#000' }}>
@@ -238,20 +238,20 @@ export default function JoinAreaPage() {
                   <div style={{ position: 'relative', width: 200, height: 200 }}>
                     {/* Corner brackets */}
                     {[
-                      { top: 0, left: 0, borderTop: '3px solid #dc2626', borderLeft: '3px solid #dc2626', borderRadius: '4px 0 0 0' },
-                      { top: 0, right: 0, borderTop: '3px solid #dc2626', borderRight: '3px solid #dc2626', borderRadius: '0 4px 0 0' },
-                      { bottom: 0, left: 0, borderBottom: '3px solid #dc2626', borderLeft: '3px solid #dc2626', borderRadius: '0 0 0 4px' },
-                      { bottom: 0, right: 0, borderBottom: '3px solid #dc2626', borderRight: '3px solid #dc2626', borderRadius: '0 0 4px 0' },
+                      { top: 0, left: 0, borderTop: '3px solid var(--red)', borderLeft: '3px solid var(--red)', borderRadius: '4px 0 0 0' },
+                      { top: 0, right: 0, borderTop: '3px solid var(--red)', borderRight: '3px solid var(--red)', borderRadius: '0 4px 0 0' },
+                      { bottom: 0, left: 0, borderBottom: '3px solid var(--red)', borderLeft: '3px solid var(--red)', borderRadius: '0 0 0 4px' },
+                      { bottom: 0, right: 0, borderBottom: '3px solid var(--red)', borderRight: '3px solid var(--red)', borderRadius: '0 0 4px 0' },
                     ].map((s, i) => (
                       <div key={i} style={{ position: 'absolute', width: 24, height: 24, ...s }} />
                     ))}
                     {/* Scan line */}
                     <div style={{
                       position: 'absolute', inset: 0, overflow: 'hidden',
-                      border: '1px solid rgba(220,38,38,0.2)', borderRadius: 2,
+                      border: '1px solid rgba(179,36,28,0.2)', borderRadius: 2,
                     }}>
                       <div style={{
-                        height: 2, background: 'linear-gradient(90deg, transparent, #dc2626, transparent)',
+                        height: 2, background: 'linear-gradient(90deg, transparent, var(--red), transparent)',
                         animation: 'scanline 2s ease-in-out infinite',
                       }} />
                     </div>
@@ -262,15 +262,15 @@ export default function JoinAreaPage() {
                   onClick={stopCamera}
                   className="absolute top-3 right-3"
                   style={{
-                    background: 'rgba(0,0,0,0.7)', border: '1px solid #333', borderRadius: 6,
-                    color: '#dc2626', fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', padding: '4px 10px',
+                    background: 'rgba(0,0,0,0.6)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 6,
+                    color: '#fff', fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', padding: '4px 10px',
                   }}
                 >
                   ✕ STOP
                 </button>
                 <p
                   className="text-center"
-                  style={{ padding: '10px', color: '#555', fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', background: '#0d0d0d' }}
+                  style={{ padding: '10px', color: 'var(--text-3)', fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', background: 'var(--surface-2)' }}
                 >
                   วาง QR ให้อยู่ในกรอบแดง
                 </p>
@@ -280,7 +280,7 @@ export default function JoinAreaPage() {
                 {camError ? (
                   <>
                     <div style={{ fontSize: 40, marginBottom: 12 }}>📵</div>
-                    <p style={{ color: '#dc2626', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textAlign: 'center', marginBottom: 16 }}>
+                    <p style={{ color: 'var(--red)', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textAlign: 'center', marginBottom: 16 }}>
                       {camError}
                     </p>
                   </>
@@ -288,13 +288,13 @@ export default function JoinAreaPage() {
                   <>
                     <div
                       className="flex items-center justify-center mb-5"
-                      style={{ width: 64, height: 64, background: '#1a1a1a', borderRadius: 12, border: '1px solid #262626' }}
+                      style={{ width: 64, height: 64, background: 'var(--surface-2)', borderRadius: 12, border: '1px solid var(--border-2)' }}
                     >
-                      <svg viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth={1.5} style={{ width: 32, height: 32 }}>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" strokeWidth={1.5} style={{ width: 32, height: 32 }}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M3 9V6a3 3 0 013-3h3M3 15v3a3 3 0 003 3h3m9-18h3a3 3 0 013 3v3m0 6v3a3 3 0 01-3 3h-3M9 9h6v6H9z" />
                       </svg>
                     </div>
-                    <p style={{ color: '#555', fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', marginBottom: 20, textAlign: 'center' }}>
+                    <p style={{ color: 'var(--text-3)', fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', marginBottom: 20, textAlign: 'center' }}>
                       กดเพื่อเปิดกล้องสแกน QR Code ของ Area
                     </p>
                   </>
@@ -304,8 +304,8 @@ export default function JoinAreaPage() {
                   disabled={!jsQrReady || loading}
                   className="flex items-center gap-2 font-black uppercase"
                   style={{
-                    background: !jsQrReady || loading ? '#1a1a1a' : '#dc2626',
-                    color: !jsQrReady || loading ? '#555' : '#fff',
+                    background: !jsQrReady || loading ? 'var(--surface-3)' : 'var(--red)',
+                    color: !jsQrReady || loading ? 'var(--text-3)' : '#fff',
                     border: 'none', borderRadius: 6,
                     fontSize: 11, letterSpacing: '0.2em', padding: '12px 24px',
                     cursor: !jsQrReady || loading ? 'not-allowed' : 'pointer',
@@ -322,9 +322,9 @@ export default function JoinAreaPage() {
         {/* Info note */}
         <div
           className="mt-4 flex items-center gap-2 px-4 py-3"
-          style={{ background: '#0d0d0d', border: '1px solid #1a1a1a', borderLeft: '3px solid #333', borderRadius: 8 }}
+          style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderLeft: '3px solid var(--gold)', borderRadius: 8 }}
         >
-          <span style={{ color: '#444', fontSize: 10, fontWeight: 700, letterSpacing: '0.12em' }}>
+          <span style={{ color: 'var(--text-3)', fontSize: 10, fontWeight: 700, letterSpacing: '0.12em' }}>
             ℹ️ รหัสเชิญได้จากผู้ดูแล Area หรือสแกน QR Code จากหน้า MY AREAS
           </span>
         </div>

@@ -14,7 +14,7 @@ import toast from 'react-hot-toast';
 // Leaflet must be loaded client-side only
 const AreaMap = dynamic(
   () => import('../../../../../components/map/AreaMap').then((m) => m.AreaMap),
-  { ssr: false, loading: () => <div className="flex-1 bg-slate-200 animate-pulse" /> },
+  { ssr: false, loading: () => <div className="flex-1 skeleton" style={{ borderRadius: 0 }} /> },
 );
 
 export default function MapPage() {
@@ -47,10 +47,10 @@ export default function MapPage() {
 
   if (loading) {
     return (
-      <div className="flex-1 flex items-center justify-center" style={{ background: '#0a0a0a', minHeight: '100vh' }}>
+      <div className="flex-1 flex items-center justify-center" style={{ background: 'transparent', minHeight: '100vh' }}>
         <div className="flex flex-col items-center gap-3">
-          <div className="w-2 h-2 rounded-full bg-red-600 animate-pulse" />
-          <p style={{ color: '#555', fontSize: 10, fontWeight: 700, letterSpacing: '0.2em' }}>LOADING MAP…</p>
+          <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: 'var(--red)' }} />
+          <p style={{ color: 'var(--text-3)', fontSize: 10, fontWeight: 700, letterSpacing: '0.2em' }}>LOADING MAP…</p>
         </div>
       </div>
     );
@@ -69,25 +69,26 @@ export default function MapPage() {
           userPosition={position}
         />
 
-        {/* Area name overlay — dark tactical */}
+        {/* Area name overlay */}
         <div
           className="absolute top-3 left-3 z-10 flex items-center gap-2 px-3 py-2"
           style={{
-            background: 'rgba(13,13,13,0.92)',
-            border: '1px solid #1f1f1f',
+            background: 'rgba(250,248,242,0.92)',
+            border: '1px solid var(--border)',
             borderRadius: 8,
             backdropFilter: 'blur(8px)',
+            boxShadow: 'var(--shadow-sm)',
           }}
         >
           <div
             className={activeCount > 0 ? 'animate-pulse' : ''}
-            style={{ width: 7, height: 7, borderRadius: '50%', background: activeCount > 0 ? '#dc2626' : '#22c55e', flexShrink: 0 }}
+            style={{ width: 7, height: 7, borderRadius: '50%', background: activeCount > 0 ? 'var(--red)' : 'var(--green)', flexShrink: 0 }}
           />
           <div>
-            <p style={{ color: '#e5e5e5', fontSize: 12, fontWeight: 700, letterSpacing: '0.08em' }} className="uppercase">
+            <p style={{ color: 'var(--text)', fontSize: 12, fontWeight: 700, letterSpacing: '0.08em' }} className="uppercase">
               {area?.name}
             </p>
-            <p style={{ color: '#555', fontSize: 9, letterSpacing: '0.1em', marginTop: 1 }}>
+            <p style={{ color: 'var(--text-3)', fontSize: 9, letterSpacing: '0.1em', marginTop: 1 }}>
               {activeCount > 0 ? `${activeCount} ACTIVE INCIDENT${activeCount > 1 ? 'S' : ''}` : 'ALL CLEAR'}
             </p>
           </div>
@@ -99,14 +100,14 @@ export default function MapPage() {
         </div>
       </div>
 
-      {/* Incident feed drawer — dark */}
+      {/* Incident feed drawer */}
       {incidents.length > 0 && (
         <div
           className="overflow-y-auto"
           style={{
             height: 160,
-            background: '#0d0d0d',
-            borderTop: '1px solid #1a1a1a',
+            background: 'var(--surface)',
+            borderTop: '1px solid var(--border)',
           }}
         >
           <IncidentFeed areaId={areaId} incidents={incidents} />

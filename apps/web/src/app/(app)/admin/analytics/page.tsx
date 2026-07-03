@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { analyticsApi } from '../../../../lib/api';
+import { FadeInSection } from '../../../../components/motion/FadeInSection';
 import { AlertTriangle, Users, CheckCircle, Clock, TrendingUp } from 'lucide-react';
 
 export default function AnalyticsPage() {
@@ -30,29 +31,29 @@ export default function AnalyticsPage() {
 
   if (loading) return (
     <div className="p-6 space-y-4">
-      {[1,2,3].map(i => <div key={i} className="h-24 bg-slate-200 rounded-xl animate-pulse" />)}
+      {[1,2,3].map(i => <div key={i} className="skeleton" style={{ height: 96 }} />)}
     </div>
   );
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold text-slate-800 mb-6">Analytics</h1>
+      <h1 className="text-2xl font-bold mb-6" style={{ color: 'var(--text)' }}>Analytics</h1>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
+      <FadeInSection className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
         {METRICS.map(({ label, value, icon: Icon, color }) => (
-          <div key={label} className="bg-white rounded-xl border p-4 shadow-sm">
+          <div key={label} className="rounded-xl border p-4" style={{ background: 'var(--surface)', borderColor: 'var(--border)', boxShadow: 'var(--shadow-xs)' }}>
             <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 ${color}`}>
               <Icon size={20} />
             </div>
-            <p className="text-2xl font-bold text-slate-800">{value ?? 0}</p>
-            <p className="text-sm text-slate-500 mt-0.5">{label}</p>
+            <p className="text-2xl font-bold" style={{ color: 'var(--text)' }}>{value ?? 0}</p>
+            <p className="text-sm mt-0.5" style={{ color: 'var(--text-3)' }}>{label}</p>
           </div>
         ))}
-      </div>
+      </FadeInSection>
 
       {breakdown.length > 0 && (
-        <div className="bg-white rounded-xl border p-5 shadow-sm">
-          <h2 className="font-semibold text-slate-700 mb-4">Incidents by Type</h2>
+        <FadeInSection delayMs={60} className="rounded-xl border p-5" style={{ background: 'var(--surface)', borderColor: 'var(--border)', boxShadow: 'var(--shadow-xs)' }}>
+          <h2 className="font-semibold mb-4" style={{ color: 'var(--text-2)' }}>Incidents by Type</h2>
           <div className="space-y-3">
             {breakdown.map((item: any) => {
               const max = breakdown[0]?.count ?? 1;
@@ -60,20 +61,20 @@ export default function AnalyticsPage() {
               return (
                 <div key={item.type}>
                   <div className="flex justify-between text-sm mb-1">
-                    <span className="text-slate-600 capitalize">{item.type.replace(/_/g, ' ')}</span>
-                    <span className="font-semibold text-slate-800">{item.count}</span>
+                    <span className="capitalize" style={{ color: 'var(--text-2)' }}>{item.type.replace(/_/g, ' ')}</span>
+                    <span className="font-semibold" style={{ color: 'var(--text)' }}>{item.count}</span>
                   </div>
-                  <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="h-2 rounded-full overflow-hidden" style={{ background: 'var(--surface-2)' }}>
                     <div
-                      className="h-full bg-red-500 rounded-full transition-all duration-500"
-                      style={{ width: `${pct}%` }}
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{ width: `${pct}%`, background: 'var(--red)' }}
                     />
                   </div>
                 </div>
               );
             })}
           </div>
-        </div>
+        </FadeInSection>
       )}
     </div>
   );

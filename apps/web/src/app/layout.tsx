@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#ef4444',
+  themeColor: '#faf8f2',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1, // prevent zoom on SOS button press
@@ -24,34 +24,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
 
-        {/* ── Global Scan Line (background decoration) ─────────────────── */}
-        <div
-          aria-hidden
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            height: 40,
-            pointerEvents: 'none',
-            zIndex: 0,
-            background: 'linear-gradient(to bottom, transparent 0%, rgba(220,38,38,0.08) 40%, rgba(220,38,38,0.15) 50%, rgba(220,38,38,0.08) 60%, transparent 100%)',
-            animation: 'scan-line 4s linear infinite',
-          }}
-        >
-          <div style={{
-            position: 'absolute',
-            top: '50%',
-            left: 0,
-            right: 0,
-            height: 1.5,
-            background: 'linear-gradient(90deg, transparent 0%, rgba(220,38,38,0.35) 15%, rgba(220,38,38,0.55) 50%, rgba(220,38,38,0.35) 85%, transparent 100%)',
-            boxShadow: '0 0 6px rgba(220,38,38,0.2)',
-          }} />
-        </div>
+        {/* ── Background effect: soft mesh gradient + fine grain ──────────── */}
+        <div aria-hidden className="bg-mesh" />
+        <div aria-hidden className="bg-grain" />
 
-        {/* Content sits above scan line */}
-        <div style={{ position: 'relative', zIndex: 1 }}>
+        {/* Content sits above background effect */}
+        <div style={{ position: 'relative', zIndex: 2 }}>
           {children}
         </div>
         <Toaster

@@ -30,19 +30,19 @@ export default function JoinViaTokenPage() {
   return (
     <div
       className="flex items-center justify-center"
-      style={{ background: '#0a0a0a', minHeight: '100vh' }}
+      style={{ background: 'transparent', minHeight: '100vh' }}
     >
       <div
         className="flex flex-col items-center text-center px-8 py-10 w-full max-w-xs"
-        style={{ background: '#111', border: '1px solid #1f1f1f', borderRadius: 12 }}
+        style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, boxShadow: 'var(--shadow-lg)' }}
       >
         {status === 'joining' && (
           <>
             <div style={{ fontSize: 48, marginBottom: 16 }} className="animate-pulse">🛡️</div>
-            <p style={{ color: '#dc2626', fontSize: 13, fontWeight: 800, letterSpacing: '0.2em', marginBottom: 8 }}>
+            <p style={{ color: 'var(--red)', fontSize: 13, fontWeight: 800, letterSpacing: '0.2em', marginBottom: 8 }}>
               AUTHENTICATING
             </p>
-            <p style={{ color: '#555', fontSize: 10, letterSpacing: '0.12em' }}>
+            <p style={{ color: 'var(--text-3)', fontSize: 10, letterSpacing: '0.12em' }}>
               กำลังเข้าร่วม Area…
             </p>
           </>
@@ -52,16 +52,16 @@ export default function JoinViaTokenPage() {
           <>
             <div
               className="flex items-center justify-center mb-5"
-              style={{ width: 64, height: 64, background: 'rgba(34,197,94,0.1)', border: '2px solid rgba(34,197,94,0.3)', borderRadius: '50%' }}
+              style={{ width: 64, height: 64, background: 'var(--green-soft)', border: '2px solid rgba(22,101,52,0.3)', borderRadius: '50%' }}
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth={2.5} style={{ width: 32, height: 32 }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth={2.5} style={{ width: 32, height: 32 }}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <p style={{ color: '#22c55e', fontSize: 13, fontWeight: 800, letterSpacing: '0.2em', marginBottom: 8 }}>
+            <p style={{ color: 'var(--green)', fontSize: 13, fontWeight: 800, letterSpacing: '0.2em', marginBottom: 8 }}>
               ACCESS GRANTED
             </p>
-            <p style={{ color: '#555', fontSize: 10, letterSpacing: '0.12em' }}>
+            <p style={{ color: 'var(--text-3)', fontSize: 10, letterSpacing: '0.12em' }}>
               กำลังพาไปยัง Areas…
             </p>
           </>
@@ -71,22 +71,22 @@ export default function JoinViaTokenPage() {
           <>
             <div
               className="flex items-center justify-center mb-5"
-              style={{ width: 64, height: 64, background: 'rgba(220,38,38,0.1)', border: '2px solid rgba(220,38,38,0.3)', borderRadius: '50%' }}
+              style={{ width: 64, height: 64, background: 'var(--red-soft)', border: '2px solid var(--red-border)', borderRadius: '50%' }}
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth={2.5} style={{ width: 32, height: 32 }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" strokeWidth={2.5} style={{ width: 32, height: 32 }}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </div>
-            <p style={{ color: '#dc2626', fontSize: 13, fontWeight: 800, letterSpacing: '0.2em', marginBottom: 8 }}>
+            <p style={{ color: 'var(--red)', fontSize: 13, fontWeight: 800, letterSpacing: '0.2em', marginBottom: 8 }}>
               ACCESS DENIED
             </p>
-            <p style={{ color: '#555', fontSize: 10, letterSpacing: '0.12em', marginBottom: 20 }}>
+            <p style={{ color: 'var(--text-3)', fontSize: 10, letterSpacing: '0.12em', marginBottom: 20 }}>
               {errMsg}
             </p>
             <button
               onClick={() => router.push('/areas/join')}
               style={{
-                background: '#dc2626', color: '#fff', border: 'none', borderRadius: 6,
+                background: 'var(--red)', color: '#fff', border: 'none', borderRadius: 6,
                 fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', padding: '10px 20px',
                 cursor: 'pointer',
               }}
@@ -99,16 +99,16 @@ export default function JoinViaTokenPage() {
         {status === 'no-token' && (
           <>
             <div style={{ fontSize: 48, marginBottom: 16 }}>📵</div>
-            <p style={{ color: '#e5e5e5', fontSize: 13, fontWeight: 800, letterSpacing: '0.15em', marginBottom: 8 }}>
+            <p style={{ color: 'var(--text)', fontSize: 13, fontWeight: 800, letterSpacing: '0.15em', marginBottom: 8 }}>
               NO TOKEN
             </p>
-            <p style={{ color: '#555', fontSize: 10, letterSpacing: '0.12em', marginBottom: 20 }}>
+            <p style={{ color: 'var(--text-3)', fontSize: 10, letterSpacing: '0.12em', marginBottom: 20 }}>
               ลิงก์ไม่มี token — ลองสแกน QR ใหม่
             </p>
             <button
               onClick={() => router.push('/areas/join')}
               style={{
-                background: '#dc2626', color: '#fff', border: 'none', borderRadius: 6,
+                background: 'var(--red)', color: '#fff', border: 'none', borderRadius: 6,
                 fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', padding: '10px 20px',
                 cursor: 'pointer',
               }}

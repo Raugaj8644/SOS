@@ -70,7 +70,7 @@ function makeEmojiIcon(emoji: string, size = 32, pulse = false): L.DivIcon {
         background:white; border-radius:50%;
         display:flex; align-items:center; justify-content:center;
         font-size:${size * 0.55}px; box-shadow:0 2px 8px rgba(0,0,0,0.3);
-        border:2px solid ${pulse ? '#ef4444' : '#e2e8f0'};
+        border:2px solid ${pulse ? '#b3241c' : '#e8e0cb'};
         ${pulse ? 'animation:sos-pulse 1.5s ease-in-out infinite;' : ''}
       ">${emoji}</div>
     `,
@@ -127,9 +127,9 @@ export function AreaMap({ area, incidents, safePoints, userPosition, isAdmin, on
       if (geoJson) {
         const layer = L.geoJSON(geoJson, {
           style: {
-            color:       '#dc2626',
+            color:       '#b3241c',
             weight:      2.5,
-            fillColor:   '#dc2626',
+            fillColor:   '#b3241c',
             fillOpacity: 0.08,
             dashArray:   '6 4',
           },
@@ -216,12 +216,13 @@ export function AreaMap({ area, incidents, safePoints, userPosition, isAdmin, on
     }
   }, [safePoints]);
 
-  // ── User position ────────────────────────────────────────────────────────
+  // ── User position — update marker + keep blue dot in sync ───────────────
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !userPosition) return;
 
     if (layersRef.current.userMarker) {
+      // Move existing marker — no auto-pan (user may have moved map)
       layersRef.current.userMarker.setLatLng([userPosition.lat, userPosition.lng]);
     } else {
       const userIcon = L.divIcon({
@@ -241,12 +242,41 @@ export function AreaMap({ area, incidents, safePoints, userPosition, isAdmin, on
         { icon: userIcon as any, zIndexOffset: 2000 },
       ).addTo(map).bindPopup('📍 ตำแหน่งของคุณ') as any;
 
-      // Pan to user on first position
+      // Pan to user only on very first fix
       map.setView([userPosition.lat, userPosition.lng], 17);
     }
   }, [userPosition?.lat, userPosition?.lng]);
 
   return (
-    <div ref={containerRef} className="w-full h-full" style={{ minHeight: '400px' }} />
+    <div style={{ position: 'relative', width: '100%', height: '100%', minHeight: 400 }}>
+      <div ref={containerRef} style={{ width: '100%', height: '100%', minHeight: 400 }} />
+
+      {/* Locate-me button — taps re-center on user */}
+      {userPosition && (
+        <button
+          onClick={() => {
+            if (mapRef.current && userPosition) {
+              mapRef.current.setView([userPosition.lat, userPosition.lng], 17, { animate: true });
+            }
+          }}
+          title="ตำแหน่งของฉัน"
+          style={{
+            position: 'absolute', bottom: 80, right: 10, zIndex: 1000,
+            width: 36, height: 36, borderRadius: 8,
+            background: 'rgba(255,255,255,0.95)',
+            border: '1.5px solid rgba(37,99,235,0.30)',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.15)',
+            cursor: 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth={2} style={{ width: 18, height: 18 }}>
+            <circle cx="12" cy="12" r="3" fill="#2563EB" />
+            <path strokeLinecap="round" d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+            <circle cx="12" cy="12" r="9" />
+          </svg>
+        </button>
+      )}
+    </div>
   );
 }

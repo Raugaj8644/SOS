@@ -4,6 +4,7 @@ import { notificationsApi, incidentsApi } from '../../../lib/api';
 import { formatDistanceToNow } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { FadeInSection } from '../../../components/motion/FadeInSection';
 
 interface Notification {
   id: string; type: string; title: string; body: string;
@@ -38,8 +39,8 @@ function SosMapPreview({ lat, lng }: { lat: number; lng: number }) {
       const icon = L.divIcon({
         className: '',
         html: `<div style="position:relative;width:28px;height:28px">
-          <div style="position:absolute;inset:0;border-radius:50%;background:rgba(220,38,38,0.35);animation:sp 1.2s ease-out infinite"></div>
-          <div style="position:absolute;top:4px;left:4px;width:20px;height:20px;border-radius:50%;background:#dc2626;border:2.5px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.6)"></div>
+          <div style="position:absolute;inset:0;border-radius:50%;background:rgba(179,36,28,0.35);animation:sp 1.2s ease-out infinite"></div>
+          <div style="position:absolute;top:4px;left:4px;width:20px;height:20px;border-radius:50%;background:#b3241c;border:2.5px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.6)"></div>
         </div><style>@keyframes sp{0%{transform:scale(1);opacity:.9}100%{transform:scale(2.4);opacity:0}}</style>`,
         iconSize: [28, 28], iconAnchor: [14, 14],
       });
@@ -101,14 +102,14 @@ function SosCard({ n, onClick }: { n: Notification; onClick: () => void }) {
     <div
       onClick={onClick}
       style={{
-        background: n.isRead ? 'var(--surface)' : 'rgba(220,38,38,0.04)',
+        background: n.isRead ? 'var(--surface)' : 'rgba(179,36,28,0.04)',
         border: `1.5px solid ${n.isRead ? 'var(--border)' : 'var(--red-border)'}`,
         borderLeft: '3px solid var(--red)',
         borderRadius: 'var(--radius)',
         padding: 14,
         marginBottom: 8,
         cursor: 'pointer',
-        boxShadow: n.isRead ? 'var(--shadow-xs)' : '0 2px 8px rgba(220,38,38,0.08)',
+        boxShadow: n.isRead ? 'var(--shadow-xs)' : '0 2px 8px rgba(179,36,28,0.08)',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8 }}>
@@ -221,7 +222,7 @@ export default function NotificationsPage() {
   const unread = notifications.filter((n) => !n.isRead).length;
 
   return (
-    <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
+    <div style={{ background: 'transparent', minHeight: '100vh' }}>
 
       {/* Header */}
       <div style={{ padding: '20px 16px 14px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -230,7 +231,7 @@ export default function NotificationsPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <p style={{ color: 'var(--text)', fontSize: 22, fontWeight: 700, letterSpacing: '-0.02em' }}>Incidents</p>
             {unread > 0 && (
-              <span className="badge badge-red">{unread} new</span>
+              <span className="badge badge-violet">{unread} new</span>
             )}
           </div>
         </div>
@@ -250,9 +251,9 @@ export default function NotificationsPage() {
             style={{
               padding: '6px 14px',
               borderRadius: 20,
-              background: filter === f ? 'var(--red)' : 'var(--surface)',
+              background: filter === f ? 'var(--violet)' : 'var(--surface)',
               color: filter === f ? '#fff' : 'var(--text-2)',
-              border: `1px solid ${filter === f ? 'var(--red)' : 'var(--border-2)'}`,
+              border: `1px solid ${filter === f ? 'var(--violet)' : 'var(--border-2)'}`,
               fontSize: 12, fontWeight: 600, cursor: 'pointer', transition: 'all 0.15s',
             }}
           >
@@ -279,7 +280,11 @@ export default function NotificationsPage() {
           </div>
         ) : (
           <>
-            {notifications.filter(isSos).map((n) => <SosCard key={n.id} n={n} onClick={() => handleClick(n)} />)}
+            {notifications.filter(isSos).map((n, i) => (
+              <FadeInSection key={n.id} delayMs={Math.min(i, 5) * 40}>
+                <SosCard n={n} onClick={() => handleClick(n)} />
+              </FadeInSection>
+            ))}
             {notifications.filter((n) => !isSos(n)).length > 0 && (
               <>
                 {notifications.filter(isSos).length > 0 && (
@@ -289,7 +294,11 @@ export default function NotificationsPage() {
                     <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
                   </div>
                 )}
-                {notifications.filter((n) => !isSos(n)).map((n) => <RegularCard key={n.id} n={n} onClick={() => handleClick(n)} />)}
+                {notifications.filter((n) => !isSos(n)).map((n, i) => (
+                  <FadeInSection key={n.id} delayMs={Math.min(i, 5) * 40}>
+                    <RegularCard n={n} onClick={() => handleClick(n)} />
+                  </FadeInSection>
+                ))}
               </>
             )}
           </>

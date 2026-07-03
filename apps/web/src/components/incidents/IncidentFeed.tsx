@@ -17,8 +17,8 @@ export function IncidentFeed({ areaId, incidents }: Props) {
       {active.length > 0 && (
         <div className="mb-1">
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-            <p className="text-xs font-bold text-red-600 uppercase tracking-wide">
+            <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: 'var(--red)' }} />
+            <p className="text-xs font-bold uppercase tracking-wide" style={{ color: 'var(--red)' }}>
               Active Incidents ({active.length})
             </p>
           </div>
@@ -34,7 +34,7 @@ export function IncidentFeed({ areaId, incidents }: Props) {
 
       {resolved.length > 0 && (
         <div>
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">
+          <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: 'var(--text-3)' }}>
             Recent ({resolved.length})
           </p>
           <div className="flex gap-3 overflow-x-auto pb-1">

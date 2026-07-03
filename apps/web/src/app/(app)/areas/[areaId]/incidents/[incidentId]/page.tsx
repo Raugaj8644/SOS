@@ -5,6 +5,7 @@ import { incidentsApi } from '../../../../../../lib/api';
 import { useAuthStore } from '../../../../../../stores/authStore';
 import { useGeolocation } from '../../../../../../hooks/useGeolocation';
 import { getSocket, SOCKET_EVENTS } from '../../../../../../lib/socket';
+import { FadeInSection } from '../../../../../../components/motion/FadeInSection';
 import { formatDistanceToNow } from 'date-fns';
 import toast from 'react-hot-toast';
 
@@ -39,8 +40,8 @@ function IncidentMap({ lat, lng }: { lat: number; lng: number }) {
       const icon = L.divIcon({
         className: '',
         html: `<div style="position:relative;width:32px;height:32px">
-          <div style="position:absolute;inset:0;border-radius:50%;background:rgba(220,38,38,0.3);animation:ip 1.2s ease-out infinite"></div>
-          <div style="position:absolute;top:4px;left:4px;width:24px;height:24px;border-radius:50%;background:#dc2626;border:3px solid white;box-shadow:0 2px 12px rgba(220,38,38,0.6);display:flex;align-items:center;justify-content:center;font-size:13px">🚨</div>
+          <div style="position:absolute;inset:0;border-radius:50%;background:rgba(179,36,28,0.3);animation:ip 1.2s ease-out infinite"></div>
+          <div style="position:absolute;top:4px;left:4px;width:24px;height:24px;border-radius:50%;background:#b3241c;border:3px solid white;box-shadow:0 2px 12px rgba(179,36,28,0.6);display:flex;align-items:center;justify-content:center;font-size:13px">🚨</div>
         </div><style>@keyframes ip{0%{transform:scale(1);opacity:.9}100%{transform:scale(2.5);opacity:0}}</style>`,
         iconSize: [32, 32], iconAnchor: [16, 16],
       });
@@ -67,15 +68,17 @@ function IncidentMap({ lat, lng }: { lat: number; lng: number }) {
 
 // ── Live tracking map ─────────────────────────────────────────────────────────
 function LiveMap({
-  initialLat, initialLng, liveLocation, onClose,
+  initialLat, initialLng, liveLocation, onClose, userPosition,
 }: {
   initialLat: number; initialLng: number;
   liveLocation: { lat: number; lng: number; updatedAt: string } | null;
   onClose: () => void;
+  userPosition: { lat: number; lng: number } | null;
 }) {
-  const ref    = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<any>(null);
-  const markerRef = useRef<any>(null);
+  const ref           = useRef<HTMLDivElement>(null);
+  const mapRef        = useRef<any>(null);
+  const markerRef     = useRef<any>(null); // incident / SOS reporter marker
+  const userMarkerRef = useRef<any>(null); // current responder (you) marker
 
   // Init map
   useEffect(() => {
@@ -84,33 +87,75 @@ function LiveMap({
 
     import('leaflet').then((L) => {
       if (!ref.current || mapRef.current) return;
+
+      // Center between both points if we have user location
+      const center: [number, number] = userPosition
+        ? [(initialLat + userPosition.lat) / 2, (initialLng + userPosition.lng) / 2]
+        : [initialLat, initialLng];
+
       const map = L.map(ref.current, {
-        center: [initialLat, initialLng], zoom: 17,
+        center, zoom: 16,
         zoomControl: true, dragging: true, attributionControl: false,
       });
       mapRef.current = map;
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
 
-      const icon = L.divIcon({
+      // ── SOS / incident reporter marker (red) ──
+      const sosIcon = L.divIcon({
         className: '',
         html: `<div style="position:relative;width:36px;height:36px">
-          <div style="position:absolute;inset:0;border-radius:50%;background:rgba(220,38,38,0.25);animation:lp 1.5s ease-out infinite"></div>
-          <div style="position:absolute;top:5px;left:5px;width:26px;height:26px;border-radius:50%;background:#dc2626;border:3px solid white;box-shadow:0 2px 14px rgba(220,38,38,0.7);display:flex;align-items:center;justify-content:center;font-size:14px">🆘</div>
+          <div style="position:absolute;inset:0;border-radius:50%;background:rgba(179,36,28,0.25);animation:lp 1.5s ease-out infinite"></div>
+          <div style="position:absolute;top:5px;left:5px;width:26px;height:26px;border-radius:50%;background:#b3241c;border:3px solid white;box-shadow:0 2px 14px rgba(179,36,28,0.7);display:flex;align-items:center;justify-content:center;font-size:14px">🆘</div>
         </div><style>@keyframes lp{0%{transform:scale(1);opacity:.9}100%{transform:scale(2.8);opacity:0}}</style>`,
         iconSize: [36, 36], iconAnchor: [18, 18],
       });
-      markerRef.current = L.marker([initialLat, initialLng], { icon }).addTo(map);
+      markerRef.current = L.marker([initialLat, initialLng], { icon: sosIcon })
+        .bindTooltip('🆘 ผู้ขอความช่วยเหลือ', { direction: 'top' })
+        .addTo(map);
+
+      // ── Responder (you) marker (blue) ──
+      if (userPosition) {
+        const youIcon = L.divIcon({
+          className: '',
+          html: `<div style="position:relative;width:28px;height:28px">
+            <div style="position:absolute;inset:0;border-radius:50%;background:rgba(37,99,235,0.25);animation:you 1.8s ease-out infinite"></div>
+            <div style="position:absolute;top:4px;left:4px;width:20px;height:20px;border-radius:50%;background:#2563EB;border:2.5px solid white;box-shadow:0 2px 10px rgba(37,99,235,0.6);display:flex;align-items:center;justify-content:center;font-size:11px">🧑</div>
+          </div><style>@keyframes you{0%{transform:scale(1);opacity:.8}100%{transform:scale(2.4);opacity:0}}</style>`,
+          iconSize: [28, 28], iconAnchor: [14, 14],
+        });
+        userMarkerRef.current = L.marker([userPosition.lat, userPosition.lng], { icon: youIcon })
+          .bindTooltip('📍 ตำแหน่งของคุณ', { direction: 'top' })
+          .addTo(map);
+
+        // Fit both markers in view
+        const bounds = L.latLngBounds(
+          [initialLat, initialLng],
+          [userPosition.lat, userPosition.lng],
+        );
+        map.fitBounds(bounds, { padding: [60, 60], maxZoom: 17 });
+      }
     });
     return () => { if (mapRef.current) { mapRef.current.remove(); mapRef.current = null; } };
-  }, [initialLat, initialLng]);
+  }, [initialLat, initialLng]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Update marker when live location changes
+  // Update SOS reporter marker when live location changes
   useEffect(() => {
     if (!liveLocation || !markerRef.current || !mapRef.current) return;
     const { lat, lng } = liveLocation;
     markerRef.current.setLatLng([lat, lng]);
-    mapRef.current.panTo([lat, lng], { animate: true, duration: 1 });
+    // Pan only if user marker doesn't exist, otherwise re-fit bounds
+    if (!userMarkerRef.current) {
+      mapRef.current.panTo([lat, lng], { animate: true, duration: 1 });
+    }
   }, [liveLocation]);
+
+  // Update responder (you) marker in real-time
+  useEffect(() => {
+    if (!userPosition || !mapRef.current) return;
+    if (userMarkerRef.current) {
+      userMarkerRef.current.setLatLng([userPosition.lat, userPosition.lng]);
+    }
+  }, [userPosition?.lat, userPosition?.lng]);
 
   const displayLat = liveLocation?.lat ?? initialLat;
   const displayLng = liveLocation?.lng ?? initialLng;
@@ -162,20 +207,25 @@ function LiveMap({
       <div style={{
         padding: '10px 16px',
         background: 'var(--surface)', borderTop: '1px solid var(--border)',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
+        flexWrap: 'wrap',
       }}>
-        <span style={{ color: 'var(--text-3)', fontSize: 11 }}>
-          📍 {displayLat.toFixed(5)}, {displayLng.toFixed(5)}
-        </span>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <span style={{ color: 'var(--text-3)', fontSize: 11 }}>
+            🆘 {displayLat.toFixed(5)}, {displayLng.toFixed(5)}
+          </span>
+          {userPosition && (
+            <span style={{ color: 'var(--blue)', fontSize: 11 }}>
+              📍 คุณ: {userPosition.lat.toFixed(5)}, {userPosition.lng.toFixed(5)}
+            </span>
+          )}
+        </div>
         <a
-          href={`https://www.google.com/maps?q=${displayLat},${displayLng}`}
+          href={`https://www.google.com/maps/dir/${userPosition ? `${userPosition.lat},${userPosition.lng}/` : ''}${displayLat},${displayLng}`}
           target="_blank" rel="noopener noreferrer"
-          style={{
-            fontSize: 12, fontWeight: 600, color: 'var(--blue)',
-            textDecoration: 'none',
-          }}
+          style={{ fontSize: 12, fontWeight: 600, color: 'var(--blue)', textDecoration: 'none', flexShrink: 0 }}
         >
-          เปิดใน Google Maps ↗
+          {userPosition ? 'นำทางไปช่วย ↗' : 'เปิดใน Google Maps ↗'}
         </a>
       </div>
     </div>
@@ -187,7 +237,7 @@ export default function IncidentDetailPage() {
   const { areaId, incidentId } = useParams() as { areaId: string; incidentId: string };
   const router = useRouter();
   const { user } = useAuthStore();
-  const { position } = useGeolocation();
+  const { position } = useGeolocation(true); // watch mode — real-time for responder marker
 
   const [incident, setIncident]     = useState<any>(null);
   const [updates, setUpdates]       = useState<any[]>([]);
@@ -271,7 +321,7 @@ export default function IncidentDetailPage() {
   };
 
   if (!incident) return (
-    <div style={{ background: 'var(--bg)', minHeight: '100vh', padding: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
+    <div style={{ background: 'transparent', minHeight: '100vh', padding: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
       {[1, 2, 3, 4].map((i) => <div key={i} className="skeleton" style={{ height: 70 }} />)}
     </div>
   );
@@ -287,7 +337,7 @@ export default function IncidentDetailPage() {
   const respCount   = incident.responder_count ?? incident.responderCount ?? responders.length;
 
   return (
-    <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
+    <div style={{ background: 'transparent', minHeight: '100vh' }}>
 
       {/* Live Map Modal */}
       {showLiveMap && incidentLat && (
@@ -295,6 +345,7 @@ export default function IncidentDetailPage() {
           initialLat={incidentLat}
           initialLng={incidentLng}
           liveLocation={liveLocation}
+          userPosition={position}
           onClose={() => setShowLiveMap(false)}
         />
       )}
@@ -320,11 +371,11 @@ export default function IncidentDetailPage() {
       <div style={{
         margin: '12px 16px 0',
         padding: '14px',
-        background: isActive ? 'rgba(220,38,38,0.05)' : 'var(--surface)',
+        background: isActive ? 'rgba(179,36,28,0.05)' : 'var(--surface)',
         border: `1.5px solid ${isActive ? 'var(--red-border)' : 'var(--border)'}`,
         borderLeft: `3px solid ${isActive ? 'var(--red)' : 'var(--border-2)'}`,
         borderRadius: 'var(--radius)',
-        boxShadow: isActive ? '0 2px 12px rgba(220,38,38,0.08)' : 'var(--shadow-xs)',
+        boxShadow: isActive ? '0 2px 12px rgba(179,36,28,0.08)' : 'var(--shadow-xs)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
           <span style={{ fontSize: 22 }}>{emoji}</span>
@@ -373,7 +424,7 @@ export default function IncidentDetailPage() {
 
         {/* ── Map section ─────────────────────────────────────────────── */}
         {incidentLat && incidentLng && (
-          <div style={{
+          <FadeInSection style={{
             background: 'var(--surface)',
             border: '1.5px solid var(--border)',
             borderRadius: 'var(--radius)',
@@ -412,7 +463,7 @@ export default function IncidentDetailPage() {
                     background: 'var(--red)', color: '#fff',
                     border: 'none', borderRadius: 'var(--radius-sm)',
                     fontSize: 11, fontWeight: 700, cursor: 'pointer',
-                    boxShadow: '0 2px 6px rgba(220,38,38,0.25)',
+                    boxShadow: '0 2px 6px rgba(179,36,28,0.25)',
                   }}
                 >
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} style={{ width: 13, height: 13 }}>
@@ -424,11 +475,11 @@ export default function IncidentDetailPage() {
               </div>
             )}
             <IncidentMap lat={incidentLat} lng={incidentLng} />
-          </div>
+          </FadeInSection>
         )}
 
         {/* ── Responders count ─────────────────────────────────────────── */}
-        <div style={{
+        <FadeInSection delayMs={40} style={{
           display: 'flex', alignItems: 'center', gap: 10,
           padding: '10px 14px',
           background: 'var(--surface)',
@@ -443,7 +494,7 @@ export default function IncidentDetailPage() {
             {respCount} ผู้ตอบสนอง{respCount !== 1 ? '' : ''}
           </span>
           {isActive && <span style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--red)', animation: 'pulse 1.5s infinite', flexShrink: 0, display: 'inline-block' }} />}
-        </div>
+        </FadeInSection>
 
         {/* ── Action Buttons ───────────────────────────────────────────── */}
         {isActive && (
@@ -479,7 +530,7 @@ export default function IncidentDetailPage() {
         )}
 
         {/* ── Activity Log ─────────────────────────────────────────────── */}
-        <div style={{
+        <FadeInSection delayMs={80} style={{
           background: 'var(--surface)',
           border: '1.5px solid var(--border)',
           borderRadius: 'var(--radius)',
@@ -548,11 +599,11 @@ export default function IncidentDetailPage() {
               </svg>
             </button>
           </form>
-        </div>
+        </FadeInSection>
 
         {/* ── Responders list ───────────────────────────────────────────── */}
         {responders.length > 0 && (
-          <div style={{
+          <FadeInSection delayMs={120} style={{
             background: 'var(--surface)',
             border: '1.5px solid var(--border)',
             borderRadius: 'var(--radius)',
@@ -590,7 +641,7 @@ export default function IncidentDetailPage() {
                 </div>
               ))}
             </div>
-          </div>
+          </FadeInSection>
         )}
       </div>
     </div>

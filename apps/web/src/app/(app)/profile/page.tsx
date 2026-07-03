@@ -31,8 +31,25 @@ export default function ProfilePage() {
 
   const initial = user?.name?.[0]?.toUpperCase() ?? '?';
 
+  if (!user) {
+    return (
+      <div style={{ minHeight: '100vh' }}>
+        <div style={{ padding: '20px 16px 14px', borderBottom: '1px solid var(--border)' }}>
+          <p style={{ color: 'var(--text-3)', fontSize: 11, fontWeight: 600, marginBottom: 2 }}>Account</p>
+          <p style={{ color: 'var(--text)', fontSize: 22, fontWeight: 700, letterSpacing: '-0.02em' }}>Profile</p>
+        </div>
+        <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div className="skeleton" style={{ height: 84 }} />
+          <div className="skeleton" style={{ height: 118 }} />
+          <div className="skeleton" style={{ height: 44 }} />
+          <div className="skeleton" style={{ height: 62 }} />
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
+    <div style={{ minHeight: '100vh' }}>
 
       {/* Header */}
       <div style={{ padding: '20px 16px 14px', borderBottom: '1px solid var(--border)' }}>
@@ -54,8 +71,8 @@ export default function ProfilePage() {
           {/* Avatar */}
           <div style={{
             width: 52, height: 52, borderRadius: '50%', flexShrink: 0,
-            background: 'linear-gradient(135deg, var(--red), #7f1d1d)',
-            border: '2px solid var(--red-border)',
+            background: 'radial-gradient(circle at 35% 35%, #FF7080, #B11226 60%, #4A0010)',
+            border: '2px solid var(--violet-border)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             color: '#fff', fontSize: 20, fontWeight: 800,
           }}>

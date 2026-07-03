@@ -77,7 +77,7 @@ export function NotificationBell() {
       <button
         onClick={() => setOpen((o) => !o)}
         className="relative p-1.5 rounded transition-colors"
-        style={{ color: unreadCount > 0 ? '#dc2626' : '#555' }}
+        style={{ color: unreadCount > 0 ? 'var(--red)' : 'var(--text-3)' }}
         aria-label="Notifications"
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-5 h-5">
@@ -87,7 +87,7 @@ export function NotificationBell() {
           <span
             className="absolute -top-0.5 -right-0.5 flex items-center justify-center font-bold animate-pulse"
             style={{
-              minWidth: 16, height: 16, background: '#dc2626', color: '#fff',
+              minWidth: 16, height: 16, background: 'var(--red)', color: '#fff',
               fontSize: 9, borderRadius: 8, padding: '0 3px', letterSpacing: 0,
             }}
           >
@@ -102,24 +102,24 @@ export function NotificationBell() {
           className="absolute right-0 mt-2 z-50 overflow-hidden"
           style={{
             width: 300,
-            background: '#0d0d0d',
-            border: '1px solid #1f1f1f',
-            borderRadius: 8,
-            boxShadow: '0 8px 32px rgba(0,0,0,0.6)',
+            background: 'var(--surface)',
+            border: '1px solid var(--border)',
+            borderRadius: 10,
+            boxShadow: 'var(--shadow-lg)',
           }}
         >
           {/* Header */}
           <div
             className="flex items-center justify-between px-4 py-3"
-            style={{ borderBottom: '1px solid #1a1a1a' }}
+            style={{ borderBottom: '1px solid var(--border)' }}
           >
-            <span style={{ color: '#888', fontSize: 10, fontWeight: 700, letterSpacing: '0.2em' }}>
+            <span style={{ color: 'var(--text-3)', fontSize: 10, fontWeight: 700, letterSpacing: '0.2em' }}>
               ALERTS {unreadCount > 0 && `· ${unreadCount} UNREAD`}
             </span>
             {unreadCount > 0 && (
               <button
                 onClick={markAllRead}
-                style={{ color: '#555', fontSize: 9, fontWeight: 700, letterSpacing: '0.12em' }}
+                style={{ color: 'var(--text-3)', fontSize: 9, fontWeight: 700, letterSpacing: '0.12em' }}
               >
                 MARK ALL READ
               </button>
@@ -131,13 +131,12 @@ export function NotificationBell() {
             {loading ? (
               <div className="p-4 space-y-2">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="animate-pulse"
-                    style={{ height: 44, background: '#111', borderRadius: 6 }} />
+                  <div key={i} className="skeleton" style={{ height: 44 }} />
                 ))}
               </div>
             ) : notifications.length === 0 ? (
               <div className="py-10 text-center">
-                <p style={{ color: '#333', fontSize: 10, fontWeight: 700, letterSpacing: '0.15em' }}>NO ALERTS</p>
+                <p style={{ color: 'var(--text-3)', fontSize: 10, fontWeight: 700, letterSpacing: '0.15em' }}>NO ALERTS</p>
               </div>
             ) : notifications.map((n) => {
               const isSos = n.type === 'sos' || n.type === 'sos_triggered';
@@ -150,8 +149,8 @@ export function NotificationBell() {
                   className="w-full flex items-start gap-3 text-left transition-colors"
                   style={{
                     padding: '10px 14px',
-                    background: !n.isRead ? (isSos ? 'rgba(220,38,38,0.05)' : '#0d0d0d') : 'transparent',
-                    borderBottom: '1px solid #141414',
+                    background: !n.isRead ? (isSos ? 'rgba(179,36,28,0.05)' : 'var(--surface-2)') : 'transparent',
+                    borderBottom: '1px solid var(--border)',
                   }}
                 >
                   <span style={{ fontSize: 16, flexShrink: 0, marginTop: 1 }}>
@@ -160,13 +159,13 @@ export function NotificationBell() {
                   <div className="flex-1 min-w-0">
                     <p style={{
                       fontSize: 11, fontWeight: !n.isRead ? 700 : 500,
-                      color: !n.isRead ? '#e5e5e5' : '#666',
+                      color: !n.isRead ? 'var(--text)' : 'var(--text-3)',
                       letterSpacing: '0.03em', lineHeight: 1.3,
                     }} className="truncate">
                       {n.title}
                     </p>
                     {timeStr && (
-                      <p style={{ color: '#383838', fontSize: 9, marginTop: 3, letterSpacing: '0.08em' }}>
+                      <p style={{ color: 'var(--text-3)', fontSize: 9, marginTop: 3, letterSpacing: '0.08em' }}>
                         {timeStr.toUpperCase()}
                       </p>
                     )}
@@ -174,7 +173,7 @@ export function NotificationBell() {
                   {!n.isRead && (
                     <div
                       className="flex-shrink-0 animate-pulse"
-                      style={{ width: 6, height: 6, borderRadius: '50%', background: isSos ? '#dc2626' : '#3b82f6', marginTop: 4 }}
+                      style={{ width: 6, height: 6, borderRadius: '50%', background: isSos ? 'var(--red)' : 'var(--blue)', marginTop: 4 }}
                     />
                   )}
                 </button>
@@ -183,11 +182,11 @@ export function NotificationBell() {
           </div>
 
           {/* Footer */}
-          <div style={{ borderTop: '1px solid #1a1a1a', padding: '10px 14px' }}>
+          <div style={{ borderTop: '1px solid var(--border)', padding: '10px 14px' }}>
             <button
               onClick={() => { router.push('/notifications'); setOpen(false); }}
               className="w-full font-bold uppercase"
-              style={{ color: '#dc2626', fontSize: 9, letterSpacing: '0.2em', background: 'none', border: 'none' }}
+              style={{ color: 'var(--red)', fontSize: 9, letterSpacing: '0.2em', background: 'none', border: 'none' }}
             >
               VIEW ALL INCIDENTS →
             </button>

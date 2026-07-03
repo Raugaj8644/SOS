@@ -4,6 +4,7 @@ import { Compass, ArrowLeft, Users, MapPin, LocateFixed } from 'lucide-react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { areasApi } from '../../../../lib/api';
+import { FadeInSection } from '../../../../components/motion/FadeInSection';
 
 interface Area {
   id: string;
@@ -59,26 +60,26 @@ export default function DiscoverAreasPage() {
   useEffect(() => { locate(); }, []);
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
-      <Link href="/dashboard" className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 mb-6">
+    <div className="max-w-2xl mx-auto p-4" style={{ position: 'relative', zIndex: 1 }}>
+      <Link href="/dashboard" className="inline-flex items-center gap-2 text-sm mb-6" style={{ color: 'var(--text-3)', textDecoration: 'none' }}>
         <ArrowLeft className="w-4 h-4" /> กลับ
       </Link>
 
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
-            <Compass className="w-5 h-5 text-purple-600" />
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'var(--gold-soft)' }}>
+            <Compass className="w-5 h-5" style={{ color: 'var(--gold)' }} />
           </div>
           <div>
-            <h1 className="text-xl font-bold">Area ใกล้เคียง</h1>
-            <p className="text-sm text-slate-500">ภายในรัศมี 5 กม.</p>
+            <h1 className="text-xl font-bold" style={{ color: 'var(--text)' }}>Area ใกล้เคียง</h1>
+            <p className="text-sm" style={{ color: 'var(--text-3)' }}>ภายในรัศมี 5 กม.</p>
           </div>
         </div>
         <button
           onClick={locate}
           disabled={locating}
-          className="flex items-center gap-1.5 px-3 py-2 bg-purple-600 hover:bg-purple-700
-                     disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors"
+          className="flex items-center gap-1.5 px-3 py-2 disabled:opacity-50 text-sm font-medium rounded-lg transition-colors"
+          style={{ background: 'var(--gold)', color: '#fff' }}
         >
           <LocateFixed size={14} className={locating ? 'animate-spin' : ''} />
           {locating ? 'กำลังค้นหา...' : 'ค้นหาอีกครั้ง'}
@@ -88,49 +89,50 @@ export default function DiscoverAreasPage() {
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-20 bg-slate-100 rounded-xl animate-pulse" />
+            <div key={i} className="skeleton" style={{ height: 80, borderRadius: 'var(--radius-lg)' }} />
           ))}
         </div>
       ) : !located ? (
         <div className="text-center py-20">
-          <LocateFixed className="w-12 h-12 mx-auto mb-3 text-slate-300" />
-          <p className="text-slate-500">กำลังขอตำแหน่งปัจจุบัน...</p>
+          <LocateFixed className="w-12 h-12 mx-auto mb-3" style={{ color: 'var(--border-2)' }} />
+          <p style={{ color: 'var(--text-3)' }}>กำลังขอตำแหน่งปัจจุบัน...</p>
         </div>
       ) : areas.length === 0 ? (
-        <div className="text-center py-16 text-slate-400">
+        <div className="text-center py-16" style={{ color: 'var(--text-3)' }}>
           <Compass className="w-12 h-12 mx-auto mb-3 opacity-30" />
           <p>ไม่พบ Area ในรัศมีนี้</p>
-          <Link href="/admin/areas" className="mt-4 inline-block text-blue-600 text-sm hover:underline">
+          <Link href="/admin/areas" className="mt-4 inline-block text-sm hover:underline" style={{ color: 'var(--gold)' }}>
             สร้าง Area แรกในพื้นที่นี้ →
           </Link>
         </div>
       ) : (
         <div className="space-y-3">
-          <p className="text-sm text-slate-500 mb-3">พบ {areas.length} area</p>
-          {areas.map((area) => (
-            <Link
-              key={area.id}
-              href={`/areas/${area.id}/map`}
-              className="flex items-center gap-4 bg-white border border-slate-200 rounded-xl p-4
-                         hover:border-purple-300 hover:shadow-sm transition-all"
-            >
-              <div className="w-11 h-11 bg-slate-100 rounded-xl flex items-center justify-center text-xl flex-shrink-0">
-                {TYPE_ICON[area.type] ?? '📍'}
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-slate-800 truncate">{area.name}</h3>
-                {area.description && (
-                  <p className="text-sm text-slate-500 mt-0.5 line-clamp-1">{area.description}</p>
-                )}
-                <p className="text-xs text-slate-400 mt-0.5 capitalize">{area.type.replace('_', ' ')}</p>
-              </div>
-              {area.memberCount != null && (
-                <div className="flex items-center gap-1 text-xs text-slate-400 flex-shrink-0">
-                  <Users className="w-3.5 h-3.5" />
-                  <span>{area.memberCount}</span>
+          <p className="text-sm mb-3" style={{ color: 'var(--text-3)' }}>พบ {areas.length} area</p>
+          {areas.map((area, i) => (
+            <FadeInSection key={area.id} delayMs={Math.min(i, 6) * 40}>
+              <Link
+                href={`/areas/${area.id}/map`}
+                className="flex items-center gap-4 rounded-xl p-4 transition-all"
+                style={{ background: 'var(--surface)', border: '1px solid var(--border)', boxShadow: 'var(--shadow-xs)' }}
+              >
+                <div className="w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style={{ background: 'var(--surface-2)' }}>
+                  {TYPE_ICON[area.type] ?? '📍'}
                 </div>
-              )}
-            </Link>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold truncate" style={{ color: 'var(--text)' }}>{area.name}</h3>
+                  {area.description && (
+                    <p className="text-sm mt-0.5 line-clamp-1" style={{ color: 'var(--text-3)' }}>{area.description}</p>
+                  )}
+                  <p className="text-xs mt-0.5 capitalize" style={{ color: 'var(--text-3)' }}>{area.type.replace('_', ' ')}</p>
+                </div>
+                {area.memberCount != null && (
+                  <div className="flex items-center gap-1 text-xs flex-shrink-0" style={{ color: 'var(--text-3)' }}>
+                    <Users className="w-3.5 h-3.5" />
+                    <span>{area.memberCount}</span>
+                  </div>
+                )}
+              </Link>
+            </FadeInSection>
           ))}
         </div>
       )}

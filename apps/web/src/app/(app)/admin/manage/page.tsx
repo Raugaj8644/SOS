@@ -4,6 +4,7 @@ import { Trash2, RefreshCw, ShieldAlert, Eye, EyeOff } from 'lucide-react';
 import { adminApi } from '../../../../lib/api';
 import { useAuthStore } from '../../../../stores/authStore';
 import { useRouter } from 'next/navigation';
+import { FadeInSection } from '../../../../components/motion/FadeInSection';
 import toast from 'react-hot-toast';
 
 const GLOBAL_ADMIN_EMAIL = 'jagauer8644@gmail.com';
@@ -82,18 +83,20 @@ export default function GlobalAdminPage() {
     <div className="p-6 max-w-3xl mx-auto">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 bg-red-600 rounded-xl flex items-center justify-center">
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'radial-gradient(circle at 35% 35%, #FF7080, #B11226 60%, #4A0010)', boxShadow: '0 3px 12px rgba(177,18,38,0.35)' }}>
           <ShieldAlert size={20} className="text-white" />
         </div>
         <div>
-          <h1 className="text-2xl font-black text-slate-800">Global Admin</h1>
-          <p className="text-slate-500 text-sm">Manage all areas on the platform</p>
+          <h1 className="text-2xl font-black" style={{ color: 'var(--text)' }}>Global Admin</h1>
+          <p className="text-sm" style={{ color: 'var(--text-3)' }}>Manage all areas on the platform</p>
         </div>
         <div className="ml-auto flex items-center gap-2">
           <button
             onClick={() => setShowInactive((v) => !v)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors
-              ${showInactive ? 'bg-slate-700 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
+            style={showInactive
+              ? { background: 'var(--text)', color: '#fff' }
+              : { background: 'var(--surface-2)', color: 'var(--text-2)' }}
           >
             {showInactive ? <Eye size={14} /> : <EyeOff size={14} />}
             {showInactive ? 'Showing all' : 'Active only'}
@@ -101,7 +104,8 @@ export default function GlobalAdminPage() {
           <button
             onClick={load}
             disabled={loading}
-            className="p-1.5 rounded-lg text-slate-500 hover:bg-slate-100 transition-colors"
+            className="p-1.5 rounded-lg transition-colors"
+            style={{ color: 'var(--text-3)' }}
           >
             <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
           </button>
@@ -111,13 +115,13 @@ export default function GlobalAdminPage() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3 mb-6">
         {[
-          { label: 'Total', value: areas.length, color: 'text-slate-800' },
-          { label: 'Active',   value: active.length,   color: 'text-green-700' },
-          { label: 'Inactive', value: inactive.length,  color: 'text-slate-400' },
+          { label: 'Total', value: areas.length, color: 'var(--text)' },
+          { label: 'Active',   value: active.length,   color: 'var(--green)' },
+          { label: 'Inactive', value: inactive.length,  color: 'var(--text-3)' },
         ].map(({ label, value, color }) => (
-          <div key={label} className="bg-white rounded-xl border p-4 text-center shadow-sm">
-            <p className={`text-3xl font-black ${color}`}>{value}</p>
-            <p className="text-xs text-slate-500 mt-0.5">{label}</p>
+          <div key={label} className="rounded-xl border p-4 text-center" style={{ background: 'var(--surface)', borderColor: 'var(--border)', boxShadow: 'var(--shadow-xs)' }}>
+            <p className="text-3xl font-black" style={{ color }}>{value}</p>
+            <p className="text-xs mt-0.5" style={{ color: 'var(--text-3)' }}>{label}</p>
           </div>
         ))}
       </div>
@@ -126,41 +130,42 @@ export default function GlobalAdminPage() {
       {loading ? (
         <div className="space-y-3">
           {[1,2,3,4].map((i) => (
-            <div key={i} className="h-20 bg-slate-100 rounded-xl animate-pulse" />
+            <div key={i} className="skeleton" style={{ height: 80 }} />
           ))}
         </div>
       ) : areas.length === 0 ? (
-        <div className="text-center py-16 text-slate-400">
+        <div className="text-center py-16" style={{ color: 'var(--text-3)' }}>
           <p className="text-4xl mb-3">🏜️</p>
           <p className="font-medium">No areas found</p>
         </div>
       ) : (
         <div className="space-y-2">
-          {areas.map((area) => (
-            <div
+          {areas.map((area, i) => (
+            <FadeInSection
               key={area.id}
-              className={`flex items-center gap-4 p-4 bg-white rounded-xl border shadow-sm
-                ${!area.isActive ? 'opacity-50' : ''}`}
+              delayMs={Math.min(i, 6) * 40}
+              className={`flex items-center gap-4 p-4 rounded-xl border ${!area.isActive ? 'opacity-50' : ''}`}
+              style={{ background: 'var(--surface)', borderColor: 'var(--border)', boxShadow: 'var(--shadow-xs)' }}
             >
-              <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-xl flex-shrink-0">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style={{ background: 'var(--surface-2)' }}>
                 {AREA_TYPE_ICON[area.type] ?? '📍'}
               </div>
 
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <p className="font-semibold text-slate-800 truncate">{area.name}</p>
+                  <p className="font-semibold truncate" style={{ color: 'var(--text)' }}>{area.name}</p>
                   {!area.isActive && (
-                    <span className="px-1.5 py-0.5 bg-slate-100 text-slate-500 text-[10px] rounded font-medium flex-shrink-0">
+                    <span className="px-1.5 py-0.5 text-[10px] rounded font-medium flex-shrink-0" style={{ background: 'var(--surface-2)', color: 'var(--text-3)' }}>
                       INACTIVE
                     </span>
                   )}
                   {!area.isPublic && (
-                    <span className="px-1.5 py-0.5 bg-yellow-100 text-yellow-700 text-[10px] rounded font-medium flex-shrink-0">
+                    <span className="px-1.5 py-0.5 text-[10px] rounded font-medium flex-shrink-0" style={{ background: 'var(--amber-soft)', color: 'var(--amber)' }}>
                       PRIVATE
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-slate-400 mt-0.5 capitalize">
+                <p className="text-xs mt-0.5 capitalize" style={{ color: 'var(--text-3)' }}>
                   {area.type.replace(/_/g, ' ')} · ID: {area.id.slice(0, 8)}…
                   {area.createdAt && (
                     <> · {new Date(area.createdAt).toLocaleDateString('th-TH')}</>
@@ -174,11 +179,11 @@ export default function GlobalAdminPage() {
                   onClick={() => handleDelete(area.id, area.name)}
                   disabled={deletingId === area.id}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold
-                    transition-all flex-shrink-0
-                    ${confirmId === area.id
-                      ? 'bg-red-600 text-white animate-pulse'
-                      : 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200'}
+                    transition-all flex-shrink-0 ${confirmId === area.id ? 'animate-pulse' : ''}
                     ${deletingId === area.id ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  style={confirmId === area.id
+                    ? { background: 'var(--red)', color: '#fff' }
+                    : { background: 'var(--red-soft)', color: 'var(--red)', border: '1px solid var(--red-border)' }}
                 >
                   <Trash2 size={14} />
                   {deletingId === area.id
@@ -188,7 +193,7 @@ export default function GlobalAdminPage() {
                       : 'Delete'}
                 </button>
               )}
-            </div>
+            </FadeInSection>
           ))}
         </div>
       )}

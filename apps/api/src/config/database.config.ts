@@ -17,7 +17,10 @@ export default registerAs('database', (): TypeOrmModuleOptions => ({
   migrationsRun: process.env.NODE_ENV === 'production',
   synchronize: false,
   logging: process.env.NODE_ENV === 'development' ? ['error'] : ['error'],
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: true } : false,
+  // DB_SSL_REJECT_UNAUTHORIZED=false disables cert check (needed for Supabase/Railway)
+  ssl: process.env.NODE_ENV === 'production'
+    ? { rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED !== 'false' }
+    : false,
   extra: {
     max: parseInt(process.env.DB_POOL_MAX ?? '20', 10),
     min: parseInt(process.env.DB_POOL_MIN ?? '2', 10),

@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { areasApi } from '../../../../lib/api';
+import { FadeInSection } from '../../../../components/motion/FadeInSection';
 import toast from 'react-hot-toast';
 
 const PolygonDrawer = dynamic(
@@ -71,7 +72,7 @@ export default function CreateAreaPage() {
   };
 
   return (
-    <div style={{ background: 'var(--bg)', minHeight: '100vh', paddingBottom: 40 }}>
+    <div style={{ background: 'transparent', minHeight: '100vh', paddingBottom: 40 }}>
 
       {/* Header */}
       <div style={{ padding: '20px 16px 14px', borderBottom: '1px solid var(--border)' }}>
@@ -91,7 +92,7 @@ export default function CreateAreaPage() {
       <div style={{ padding: '16px' }}>
 
         {/* ── Existing Areas Warning ─────────────────────────────────────── */}
-        <div style={{
+        <FadeInSection style={{
           background: 'var(--surface)',
           border: '1.5px solid var(--border)',
           borderLeft: '3px solid var(--amber)',
@@ -158,20 +159,20 @@ export default function CreateAreaPage() {
                 background: 'var(--red)', color: '#fff',
                 border: 'none', borderRadius: 'var(--radius)',
                 fontSize: 13, fontWeight: 700, cursor: 'pointer',
-                boxShadow: '0 2px 8px rgba(220,38,38,0.22)',
+                boxShadow: '0 2px 8px rgba(179,36,28,0.22)',
               }}
             >
               ยืนยัน — ต้องการสร้าง Area ใหม่
             </button>
           )}
-        </div>
+        </FadeInSection>
 
         {/* ── Create Form (hidden until confirmed) ──────────────────────── */}
         {showForm && (
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
 
             {/* Map */}
-            <div style={{
+            <FadeInSection style={{
               background: 'var(--surface)',
               border: '1.5px solid var(--border)',
               borderRadius: 'var(--radius)',
@@ -187,10 +188,10 @@ export default function CreateAreaPage() {
                   ✅ บันทึกขอบเขตแล้ว
                 </p>
               )}
-            </div>
+            </FadeInSection>
 
             {/* Details */}
-            <div style={{
+            <FadeInSection delayMs={40} style={{
               background: 'var(--surface)',
               border: '1.5px solid var(--border)',
               borderRadius: 'var(--radius)',
@@ -260,7 +261,7 @@ export default function CreateAreaPage() {
                   />
                 </div>
               </div>
-            </div>
+            </FadeInSection>
 
             <button
               type="submit"

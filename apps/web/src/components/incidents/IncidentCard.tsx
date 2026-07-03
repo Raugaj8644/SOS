@@ -74,12 +74,12 @@ export function IncidentCard({ incident, compact = false }: Props) {
   };
 
   return (
-    <div className={`bg-white border rounded-xl overflow-hidden transition-shadow hover:shadow-md
-      ${isActive ? 'border-red-200' : 'border-slate-200 opacity-70'}
-      ${compact ? '' : 'shadow-sm'}`}
+    <div
+      className={`border rounded-xl overflow-hidden transition-shadow hover:shadow-md ${compact ? '' : 'shadow-sm'} ${!isActive ? 'opacity-70' : ''}`}
+      style={{ background: 'var(--surface)', borderColor: isActive ? 'var(--red-border)' : 'var(--border)' }}
     >
       {/* Active indicator */}
-      {isActive && <div className="h-1 bg-gradient-to-r from-red-500 to-red-600" />}
+      {isActive && <div className="h-1" style={{ background: 'linear-gradient(90deg, var(--red), var(--red-hover))' }} />}
 
       <div className="p-4">
         {/* Type badge + time */}
@@ -88,7 +88,7 @@ export function IncidentCard({ incident, compact = false }: Props) {
             text-xs font-semibold border ${config.color}`}>
             {config.icon} {config.label}
           </span>
-          <span className="text-xs text-slate-400 flex items-center gap-1">
+          <span className="text-xs flex items-center gap-1" style={{ color: 'var(--text-3)' }}>
             <Clock size={11} />
             {(() => { const d = new Date(incident.createdAt); return isNaN(d.getTime()) ? '—' : formatDistanceToNow(d, { addSuffix: true }); })()}
           </span>
@@ -96,11 +96,11 @@ export function IncidentCard({ incident, compact = false }: Props) {
 
         {/* Description */}
         {incident.description && (
-          <p className="text-sm text-slate-700 mb-3">{incident.description}</p>
+          <p className="text-sm mb-3" style={{ color: 'var(--text-2)' }}>{incident.description}</p>
         )}
 
         {/* Meta */}
-        <div className="flex items-center gap-4 text-xs text-slate-500">
+        <div className="flex items-center gap-4 text-xs" style={{ color: 'var(--text-3)' }}>
           <span className="flex items-center gap-1">
             <Users size={12} />
             {incident.responderCount} responding
@@ -120,8 +120,8 @@ export function IncidentCard({ incident, compact = false }: Props) {
               <button
                 onClick={handleRespond}
                 disabled={responding}
-                className="flex-1 py-2 bg-blue-600 hover:bg-blue-500 disabled:bg-blue-300
-                           text-white text-sm font-semibold rounded-lg transition-colors"
+                className="flex-1 py-2 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-50"
+                style={{ background: 'var(--gold)' }}
               >
                 {responding ? 'Confirming…' : '✋ I\'m Responding'}
               </button>
@@ -130,8 +130,8 @@ export function IncidentCard({ incident, compact = false }: Props) {
               <button
                 onClick={handleClose}
                 disabled={closing}
-                className="flex-1 py-2 bg-green-600 hover:bg-green-500 disabled:bg-green-300
-                           text-white text-sm font-semibold rounded-lg transition-colors"
+                className="flex-1 py-2 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-50"
+                style={{ background: 'var(--green)' }}
               >
                 {closing ? 'Closing…' : '✅ Close Incident'}
               </button>

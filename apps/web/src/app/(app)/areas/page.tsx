@@ -68,7 +68,7 @@ export default function MyAreasPage() {
   const activeCount = areas.filter((a) => a.area.isActive).length;
 
   return (
-    <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
+    <div style={{ background: 'transparent', minHeight: '100vh' }}>
 
       {/* Header */}
       <div style={{ padding: '20px 16px 16px', borderBottom: '1px solid var(--border)' }}>
@@ -84,7 +84,7 @@ export default function MyAreasPage() {
             style={{
               display: 'flex', alignItems: 'center', gap: 6,
               padding: '8px 14px',
-              background: 'var(--red)',
+              background: 'var(--violet)',
               color: '#fff',
               borderRadius: 8,
               fontSize: 13, fontWeight: 600,
@@ -114,7 +114,7 @@ export default function MyAreasPage() {
             </p>
             <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
               <Link href="/areas/join" style={{
-                padding: '9px 18px', background: 'var(--red)', color: '#fff',
+                padding: '9px 18px', background: 'var(--violet)', color: '#fff',
                 borderRadius: 8, fontSize: 13, fontWeight: 600, textDecoration: 'none',
               }}>Join Area</Link>
               <Link href="/admin/areas" style={{
@@ -132,7 +132,7 @@ export default function MyAreasPage() {
                 padding: '12px 14px',
                 background: 'var(--surface)',
                 border: '1.5px solid var(--border)',
-                borderLeft: `3px solid ${area.isActive ? 'var(--red)' : 'var(--border-2)'}`,
+                borderLeft: `3px solid ${area.isActive ? 'var(--violet)' : 'var(--border-2)'}`,
                 borderRadius: 'var(--radius)',
                 boxShadow: 'var(--shadow-xs)',
               }}
@@ -157,8 +157,8 @@ export default function MyAreasPage() {
                   </p>
                   {role === 'admin' && (
                     <span style={{
-                      background: 'var(--red-soft)', color: 'var(--red)',
-                      border: '1px solid var(--red-border)',
+                      background: 'var(--violet-soft)', color: 'var(--violet)',
+                      border: '1px solid var(--violet-border)',
                       fontSize: 10, fontWeight: 600, padding: '1px 6px', borderRadius: 4,
                     }}>Admin</span>
                   )}
