@@ -1,0 +1,8 @@
+[phases.build]
+cmds = [
+  "pnpm --filter @cerp/shared build",
+  "pnpm --filter @cerp/api build"
+]
+
+[start]
+cmd = "node apps/api/dist/main.js"
