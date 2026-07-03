@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+﻿import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerModule } from '@nestjs/throttler';
@@ -12,6 +12,7 @@ import { IncidentsModule } from './modules/incidents/incidents.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { MediaModule } from './modules/media/media.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
+import { HealthController } from './health.controller';
 import { AdminModule } from './modules/admin/admin.module';
 
 @Module({
@@ -57,5 +58,6 @@ import { AdminModule } from './modules/admin/admin.module';
     AnalyticsModule,
     AdminModule,
   ],
+  controllers: [HealthController],
 })
 export class AppModule {}
