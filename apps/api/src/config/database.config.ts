@@ -1,4 +1,4 @@
-﻿import { registerAs } from '@nestjs/config';
+import { registerAs } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { join } from 'path';
 
