@@ -2,10 +2,10 @@
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
     "builder": "NIXPACKS",
-    "buildCommand": "cd ../.. && pnpm --filter @cerp/shared build && pnpm --filter @cerp/api build"
+    "buildCommand": "pnpm --filter @cerp/shared build && pnpm --filter @cerp/api build"
   },
   "deploy": {
-    "startCommand": "cd ../.. && node apps/api/dist/main.js",
+    "startCommand": "node apps/api/dist/main.js",
     "healthcheckPath": "/api/v1/health",
     "healthcheckTimeout": 60,
     "restartPolicyType": "ON_FAILURE",
