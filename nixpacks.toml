@@ -1,5 +1,8 @@
 [phases.install]
-cmds = ["pnpm install --filter @cerp/shared --filter @cerp/api --no-frozen-lockfile"]
+cmds = [
+  "printf 'packages:\\n  - packages/shared\\n  - apps/api\\n' > pnpm-workspace.yaml",
+  "pnpm install --no-frozen-lockfile"
+]
 
 [phases.build]
 cmds = ["pnpm --filter @cerp/shared build && pnpm --filter @cerp/api build"]
